@@ -1,0 +1,62 @@
+
+"DOTAUnits"
+{
+    "npc_dota_building_haunted_mine"
+    {
+        // General
+        //----------------------------------------------------------------
+        "BaseClass"					"npc_dota_creature"
+        "Model"						"models/props_structures/dire_barracks_melee001.vmdl"
+        "ModelScale"				"0.5"
+        "Level"						"1"
+        "HealthBarOffset"			"240"
+    
+        // Armor
+        //----------------------------------------------------------------
+        "ArmorPhysical"				"5"
+        "MagicalResistance"			"0"
+    
+        // Attack
+        //----------------------------------------------------------------
+        "AttackCapabilities"		"DOTA_UNIT_CAP_NO_ATTACK"
+        "AttackDamageType"			"DAMAGE_TYPE_ArmorPhysical"
+        "AttackDamageMin"			"0"
+        "AttackDamageMax"			"0"
+    
+        // Bounty
+        //----------------------------------------------------------------
+        "BountyGoldMin"				"0.0"
+        "BountyGoldMax"				"0.0"
+    
+        // Bounds
+        //----------------------------------------------------------------
+        "BoundsHullName"			"DOTA_HULL_SIZE_BARRACKS"
+        "RingRadius"				"140"
+        "CollisionSize"				"144"
+    
+        // Movement
+        //----------------------------------------------------------------
+        "MovementCapabilities"		"DOTA_UNIT_CAP_MOVE_NONE"	// Needed to cast Point abilities
+        "MovementSpeed"				"0"
+    
+        // Status
+        //----------------------------------------------------------------
+        "StatusHealth"				"1200"
+        "StatusHealthRegen"			"5"
+        "StatusMana"				"100"
+        "StatusManaRegen"			"10"
+    
+        // Vision
+        //----------------------------------------------------------------
+        "VisionDaytimeRange"		"900"
+        "VisionNighttimeRange"		"600"
+    
+        // Team
+        //----------------------------------------------------------------
+        "TeamName"					"DOTA_TEAM_NEUTRALS"
+        "CombatClassAttack"			"DOTA_COMBAT_CLASS_ATTACK_BASIC"
+        "CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_STRUCTURE"
+        "UnitRelationShipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_BUILDING"
+    
+    }
+}

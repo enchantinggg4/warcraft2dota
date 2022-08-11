@@ -1,0 +1,19 @@
+"AddonInfo"
+{
+  "TeamCount" "6"
+  "maps"      "your_map"
+  "IsPlayable"  "1"
+  "template_map"
+  {
+          "MaxPlayers"                    "6"
+  }
+  "Default_Keys"
+    {
+        "01"
+        {
+            "Key"       "ESC"
+            "Command"   "CancelCurrentActionCommand"
+            "Name"      "Execute Ability 1"
+        }
+    }
+}

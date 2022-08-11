@@ -1,4 +1,6 @@
 #base "heroes/meepo.kv"
+#base "abilities/train_acolyte.kv"
+#base "abilities/acolyte_haunt_mine.kv"
 
 "DOTAAbilities"
 {

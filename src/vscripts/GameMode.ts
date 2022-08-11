@@ -1,5 +1,10 @@
+import { BuildManager } from "./BuildManager";
 import { reloadable } from "./lib/tstl-utils";
-import { modifier_panic } from "./modifiers/modifier_panic";
+import { modifier_gold_mine } from "./modifiers/modifier_gold_mine";
+import { modifier_gold_mine_haunted } from "./modifiers/modifier_gold_mine_haunted";
+import { modifier_fake_invul } from "./modifiers/util/modifier_fake_invul";
+import { modifier_acolyte } from "./modifiers/worker/modifier_acolyte";
+import { Utility } from "./Utility";
 
 const heroSelectionTime = 20;
 
@@ -26,24 +31,19 @@ export class GameMode {
 
         // Register event listeners for dota engine events
         ListenToGameEvent("game_rules_state_change", () => this.OnStateChange(), undefined);
-        ListenToGameEvent("npc_spawned", event => this.OnNpcSpawned(event), undefined);
+        // ListenToGameEvent("dota_player_spawned", event => this.OnPlayerSpawned(event), undefined);
+        ListenToGameEvent("npc_spawned", event => this.OnPlayerSpawned(event), undefined);
 
         // Register event listeners for events from the UI
         CustomGameEventManager.RegisterListener("ui_panel_closed", (_, data) => {
-            print(`Player ${data.PlayerID} has closed their UI panel.`);
 
-            // Respond by sending back an example event
-            const player = PlayerResource.GetPlayer(data.PlayerID)!;
-            CustomGameEventManager.Send_ServerToPlayer(player, "example_event", {
-                myNumber: 42,
-                myBoolean: true,
-                myString: "Hello!",
-                myArrayOfNumbers: [1.414, 2.718, 3.142]
-            });
+        });
 
-            // Also apply the panic modifier to the sending player's hero
-            const hero = player.GetAssignedHero();
-            hero.AddNewModifier(hero, undefined, modifier_panic.name, { duration: 5 });
+        CustomGameEventManager.RegisterListener<any>("cancel_current_action", (_, data) => {
+            print("Cancel action ", data.PlayerID)
+            print(data.SelectedEntity);
+            const firstUnit = EntIndexToHScript(data.SelectedEntity) as CDOTA_BaseNPC;
+            print(firstUnit.GetName());
         });
     }
 
@@ -53,29 +53,30 @@ export class GameMode {
 
         GameRules.SetShowcaseTime(0);
         GameRules.SetHeroSelectionTime(heroSelectionTime);
+        GameRules.SetStrategyTime(1);
+
+        GameRules.GetGameModeEntity().SetCustomGameForceHero("npc_dota_hero_alchemist");
+
+        // GameRules.GetGameModeEntity().SetUnseenFogOfWarEnabled(true);
     }
 
     public OnStateChange(): void {
         const state = GameRules.State_Get();
 
-        // Add 4 bots to lobby in tools
-        if (IsInToolsMode() && state == GameState.CUSTOM_GAME_SETUP) {
-            for (let i = 0; i < 4; i++) {
-                Tutorial.AddBot("npc_dota_hero_lina", "", "", false);
-            }
-        }
-
         if (state === GameState.CUSTOM_GAME_SETUP) {
             // Automatically skip setup in tools
             if (IsInToolsMode()) {
-                Timers.CreateTimer(3, () => {
+                Timers.CreateTimer(1, () => {
                     GameRules.FinishCustomGameSetup();
                 });
             }
+
+
         }
 
         // Start game once pregame hits
         if (state === GameState.PRE_GAME) {
+            this.LoadMap();
             Timers.CreateTimer(0.2, () => this.StartGame());
         }
     }
@@ -90,18 +91,81 @@ export class GameMode {
     public Reload() {
         print("Script reloaded!");
 
+
+
+
         // Do some stuff here
     }
 
-    private OnNpcSpawned(event: NpcSpawnedEvent) {
-        // After a hero unit spawns, apply modifier_panic for 8 seconds
-        const unit = EntIndexToHScript(event.entindex) as CDOTA_BaseNPC; // Cast to npc since this is the 'npc_spawned' event
-        // Give all real heroes (not illusions) the meepo_earthbind_ts_example spell
-        if (unit.IsRealHero()) {
-            if (!unit.HasAbility("meepo_earthbind_ts_example")) {
-                // Add lua ability to the unit
-                unit.AddAbility("meepo_earthbind_ts_example");
-            }
+    private OnPlayerSpawned(event: NpcSpawnedEvent) {
+
+
+        if(!IsServer()) return;
+
+        const npc = EntIndexToHScript(event.entindex) as CDOTA_BaseNPC;
+
+        if(npc.HasAbility("train_acolyte")){
+            print("ITS NECRPO SAWSPN")
+            npc.FindAbilityByName("train_acolyte")?.SetLevel(1);
+            return;
         }
+        if (!npc.IsRealHero()) return;
+
+
+        const playerId = npc.GetPlayerOwnerID();
+        // npc.SetRespawnsDisabled(true);
+        // npc.AddNoDraw();
+        // npc.ForceKill(false);
+        PlayerResource.SetCameraTarget(playerId, undefined);
+
+        this.SpawnUndead(playerId);
+
+    }
+
+
+
+    private SpawnUndead(playerId: PlayerID){
+        const player = PlayerResource.GetPlayer(playerId)!;
+        // Create throne
+
+
+
+        // npc_dota_building_necropolis
+        const closestMine = Utility.FindClosestFreeMine(player.GetAbsOrigin());
+
+        const castle = CreateUnitByName("npc_dota_building_necropolis", player.GetAbsOrigin(), false, player, player, player.GetTeam());
+        castle.SetControllableByPlayer(playerId, true);
+        const position: Vector = player.GetAbsOrigin().__add(player.GetForwardVector().__mul(300));
+
+
+        for(let i = 0; i < 3; i++){
+            const acolyte: CDOTA_BaseNPC = CreateUnitByName("npc_dota_undead_acolyte", position, true, player, player, player.GetTeam());
+            acolyte.AddNewModifier(acolyte, undefined, modifier_acolyte.name, { duration: - 1});
+            acolyte.SetControllableByPlayer(playerId, true);
+        }
+    }
+
+
+
+    private LoadMap(){
+        if(!IsServer()) return;
+        const targets: CBaseEntity[] = Entities.FindAllByClassname("info_target");
+        for(const entity of targets){
+            const targetType = entity.Attribute_GetIntValue("TargetType", -1);
+
+            if(targetType == -1) continue;
+
+            if(targetType == 0){
+                print("oki we have a gold mine spot! ;)")
+                const mine = CreateUnitByName("npc_dota_building_neutral_gold_mine", entity.GetAbsOrigin(), false, undefined, undefined, DotaTeam.NEUTRALS);
+                mine.AddNewModifier(mine, undefined, modifier_fake_invul.name, { duration: -1 });
+                mine.AddNewModifier(mine, undefined, modifier_gold_mine.name, { duration: -1 });
+                mine.RemoveModifierByName("modifier_invulnerable");
+
+                print(mine.GetUnitName());
+            }
+
+        }
+        
     }
 }

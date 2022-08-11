@@ -1,0 +1,11 @@
+
+#base "units/undead/acolyte.kv"
+#base "units/undead/necropolis.kv"
+#base "units/undead/haunted_mine.kv"
+
+#base "units/neutral_gold_mine.kv"
+
+"DOTAUnits"
+{
+    
+}

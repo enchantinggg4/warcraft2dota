@@ -15,7 +15,7 @@
     </snippets>
 
     <Panel hittest="false" class="MainHud">
-        <Panel id="ExamplePanel">
+        <!-- <Panel id="ExamplePanel">
 
             <Image id="BannerImage" src="file://{resources}/images/custom_game/tstl.png" />
 
@@ -26,6 +26,6 @@
             <Button id="CloseButton" onactivate="OnCloseButtonClicked()">
                 <Label text="Close" />
             </Button>
-        </Panel>
+        </Panel> -->
     </Panel>
 </root>

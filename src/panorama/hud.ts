@@ -24,7 +24,6 @@ GameEvents.Subscribe("example_event", (data: NetworkedData<ExampleEventData>) =>
     const myArray = toArray(myArrayObject); // We can turn it back into an array ourselves.
 
     $.Msg("Received example event", myNumber, myString, myBoolean, myArrayObject, myArray);
-
 });
 
 /**
@@ -43,3 +42,11 @@ function toArray<T>(obj: Record<number, T>): T[] {
 
     return result;
 }
+
+
+$.RegisterForUnhandledEvent("Cancelled", () => {
+    // TODO: send event
+
+    GameEvents.SendCustomGameEventToServer<any>("cancel_current_action", { PlayerID: Game.GetLocalPlayerID(), SelectedEntity: Players.GetSelectedEntities(Game.GetLocalPlayerID())[0] });
+    
+})

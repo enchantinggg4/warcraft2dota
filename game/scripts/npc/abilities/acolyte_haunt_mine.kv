@@ -1,0 +1,50 @@
+///                                                           ///
+/// ModDota AbilityLuaSpellLibrary spells for Meepo           ///
+///                                                           ///
+/// Last Update: 7.07c                                        ///
+///                                                           ///
+
+"DOTAAbilities"
+{
+    //=================================================================================================================
+    // Meepo: Earthbind
+    //=================================================================================================================
+    "acolyte_haunt_mine"
+    {
+        // General
+        //-------------------------------------------------------------------------------------------------------------
+        "BaseClass"                     "ability_lua"
+        "ScriptFile"                    "abilities/acolyte/acolyte_haunt_mine.lua"
+        "AbilityTextureName"            "acolyte"
+
+        "SpellImmunityType"             "SPELL_IMMUNITY_ENEMIES_NO"
+        "SpellDispellableType"          "SPELL_DISPELLABLE_YES"
+        "FightRecapLevel"               "1"
+
+
+        // Casting
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityCastPoint"              "0"
+        "AbilityCastRange"              "100"
+
+        // Time
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityCooldown"               "1"
+
+        // Cost
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityManaCost"               "1"
+
+        // Special
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilitySpecial"
+        {
+            "01"
+            {
+                "var_type"              "FIELD_INTEGER"
+                "train_duration"              "10"
+            }
+        }
+        "AbilityCastAnimation"      "ACT_DOTA_CAST_ABILITY_1"
+    }
+}
