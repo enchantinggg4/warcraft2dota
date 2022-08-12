@@ -1,0 +1,53 @@
+///                                                           ///
+/// ModDota AbilityLuaSpellLibrary spells for Meepo           ///
+///                                                           ///
+/// Last Update: 7.07c                                        ///
+///                                                           ///
+
+"DOTAAbilities"
+{
+    //=================================================================================================================
+    // Meepo: Earthbind
+    //=================================================================================================================
+    "worker_harvest_lumber"
+    {
+        // General
+        //-------------------------------------------------------------------------------------------------------------
+        "BaseClass"                     "ability_lua"
+        "ScriptFile"                    "abilities/worker/worker_harvest_lumber.lua"
+        "AbilityTextureName"            "acolyte"
+        "AbilityBehavior"               "DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+        "AbilityUnitTargetTeam"         "DOTA_UNIT_TARGET_TEAM_CUSTOM"
+        "AbilityUnitTargetType"         "DOTA_UNIT_TARGET_TREE"
+        "SpellImmunityType"             "SPELL_IMMUNITY_ENEMIES_YES"
+        "SpellDispellableType"          "SPELL_DISPELLABLE_YES"
+        "FightRecapLevel"               "1"
+
+
+        // Casting
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityCastPoint"              "0.8"
+        "AbilityCastAnimation"          "ACT_DOTA_ATTACK"
+        "AbilityCastRange"              "100"
+
+        // Time
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityCooldown"               "0"
+
+        // Cost
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityManaCost"               "0"
+
+        // Special
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilitySpecial"
+        {
+            "01"
+            {
+                "var_type"              "FIELD_INTEGER"
+                "train_duration"              "10"
+            }
+
+        }
+    }
+}

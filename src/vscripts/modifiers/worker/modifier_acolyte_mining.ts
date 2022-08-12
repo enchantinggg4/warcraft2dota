@@ -1,5 +1,6 @@
 import { BaseModifier, registerModifier } from "../../lib/dota_ts_adapter";
-import { GoldMine, HauntedGoldMine, IsHauntedGoldMine } from "../../types/GoldMine";
+import { ResourceManager } from "../../ResourceManager";
+import { GoldMine, HauntedGoldMine, IsHauntedGoldMine, Resource } from "../../types/GoldMine";
 import { Utility } from "../../util/Utility";
 
 @registerModifier()
@@ -87,10 +88,8 @@ export class modifier_acolyte_mining extends BaseModifier {
         // todo extract mining logic
         const mineAmount = 10; 
         if(this.goldMine.gold > mineAmount){
-            PlayerResource.SetGold(playerId, PlayerResource.GetGold(playerId) + mineAmount, false);
+            ResourceManager.Deposit(playerId, Resource.GOLD, mineAmount);
             this.goldMine.gold -= mineAmount;
-
-            print(this.goldMine.gold)
         }
     }
 

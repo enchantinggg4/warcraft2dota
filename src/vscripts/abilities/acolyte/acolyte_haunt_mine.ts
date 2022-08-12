@@ -1,8 +1,8 @@
 import { BuildManager } from "../../BuildManager";
 import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "../../lib/dota_ts_adapter";
 import { modifier_generic_build_timer } from "../../modifiers/building/modifier_generic_build_timer";
-import { modifier_gold_mine } from "../../modifiers/modifier_gold_mine";
-import { modifier_gold_mine_haunted } from "../../modifiers/modifier_gold_mine_haunted";
+import { modifier_gold_mine } from "../../modifiers/mine/modifier_gold_mine";
+import { modifier_gold_mine_haunted } from "../../modifiers/mine/modifier_gold_mine_haunted";
 import { HauntedGoldMine } from "../../types/GoldMine";
 
 

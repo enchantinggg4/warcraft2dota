@@ -1,11 +1,13 @@
 import { BuildManager } from "./BuildManager";
 import { reloadable } from "./lib/tstl-utils";
-import { modifier_gold_mine } from "./modifiers/modifier_gold_mine";
+import { modifier_gold_mine } from "./modifiers/mine/modifier_gold_mine";
 import { modifier_fake_invul } from "./modifiers/util/modifier_fake_invul";
 import { modifier_acolyte } from "./modifiers/worker/modifier_acolyte";
 import { GoldMine } from "./types/GoldMine";
+import { CustomGameEvents } from "./util/CustomGameEvents";
 import { Spawns } from "./util/Spawns";
 import { Utility } from "./util/Utility";
+import { InstallLumber } from "./lib/lumber"
 
 const heroSelectionTime = 20;
 
@@ -24,6 +26,7 @@ export class GameMode {
 
     public static Activate(this: void) {
         // When the addon activates, create a new instance of this GameMode class.
+        InstallLumber();
         GameRules.Addon = new GameMode();
     }
 
@@ -35,11 +38,8 @@ export class GameMode {
         // ListenToGameEvent("dota_player_spawned", event => this.OnPlayerSpawned(event), undefined);
         ListenToGameEvent("npc_spawned", event => this.OnNpcSpawn(event), undefined);
 
-        // Register event listeners for events from the UI
-        CustomGameEventManager.RegisterListener("ui_panel_closed", (_, data) => {
 
-        });
-
+        CustomGameEventManager.RegisterListener<any>("right_click_order", Dynamic_Wrap<any, any>(CustomGameEvents, 'OnRightClick'));
         CustomGameEventManager.RegisterListener<any>("cancel_current_action", (_, data) => {
             print("Cancel action ", data.PlayerID)
             print(data.SelectedEntity);
@@ -55,6 +55,8 @@ export class GameMode {
         GameRules.SetShowcaseTime(0);
         GameRules.SetHeroSelectionTime(heroSelectionTime);
         GameRules.SetStrategyTime(1);
+
+        GameRules.SetTreeRegrowTime(100000000);
 
         GameRules.GetGameModeEntity().SetCustomGameForceHero("npc_dota_hero_alchemist");
 
@@ -101,12 +103,12 @@ export class GameMode {
     private OnNpcSpawn(event: NpcSpawnedEvent) {
 
 
-        if(!IsServer()) return;
+        if (!IsServer()) return;
         const npc = EntIndexToHScript(event.entindex) as CDOTA_BaseNPC;
 
-        Spawns.SpawnAcolyte(npc);
+        Spawns.DoSpawns(npc);
 
-        if(npc.HasAbility("train_acolyte")){
+        if (npc.HasAbility("train_acolyte")) {
             npc.FindAbilityByName("train_acolyte")?.SetLevel(1);
             return;
         }
@@ -125,7 +127,7 @@ export class GameMode {
 
 
 
-    private SpawnUndead(playerId: PlayerID){
+    private SpawnUndead(playerId: PlayerID) {
         const player = PlayerResource.GetPlayer(playerId)!;
         // Create throne
 
@@ -139,40 +141,51 @@ export class GameMode {
         const position: Vector = player.GetAbsOrigin().__add(player.GetForwardVector().__mul(300));
 
 
-        for(let i = 0; i < 3; i++){
+        for (let i = 0; i < 3; i++) {
             const acolyte: CDOTA_BaseNPC = CreateUnitByName("npc_dota_undead_acolyte", position, true, player, player, player.GetTeam());
             acolyte.SetControllableByPlayer(playerId, true);
         }
 
-        for(let i = 0; i < 1; i++){
+        for (let i = 0; i < 1; i++) {
             const ghoul: CDOTA_BaseNPC = CreateUnitByName("npc_dota_undead_ghoul", position, true, player, player, player.GetTeam());
-            // ghoul.AddNewModifier(ghoul, undefined, modifier_acolyte.name, { duration: - 1});
             ghoul.SetControllableByPlayer(playerId, true);
         }
     }
 
 
 
-    private LoadMap(){
-        if(!IsServer()) return;
+    private LoadMap() {
+        if (!IsServer()) return;
         const targets: CBaseEntity[] = Entities.FindAllByClassname("info_target");
-        for(const entity of targets){
+        for (const entity of targets) {
             const targetType = entity.Attribute_GetIntValue("TargetType", -1);
 
-            if(targetType == -1) continue;
+            if (targetType == -1) continue;
 
-            if(targetType == 0){
+            if (targetType == 0) {
                 const mine = CreateUnitByName("npc_dota_building_neutral_gold_mine", entity.GetAbsOrigin(), false, undefined, undefined, DotaTeam.NEUTRALS) as GoldMine;
                 mine.gold = 15000;
 
                 mine.AddNewModifier(mine, undefined, modifier_fake_invul.name, { duration: -1 });
                 mine.AddNewModifier(mine, undefined, modifier_gold_mine.name, { duration: -1 });
                 mine.RemoveModifierByName("modifier_invulnerable");
-
-                print(mine.GetUnitName());
             }
 
         }
-        
+
+        this.InitTreeHealth();
+
+    }
+
+    private InitTreeHealth() {
+
+        const targets: CBaseEntity[] = Entities.FindAllByClassname("ent_dota_tree");
+        targets.forEach(tree => {
+            // TODO: make props
+            tree.SetMaxHealth(100);
+            tree.SetHealth(100);
+
+        })
+
     }
 }

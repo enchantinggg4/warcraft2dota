@@ -2,7 +2,7 @@ import { BaseModifier, registerModifier } from "../../lib/dota_ts_adapter";
 import { HauntedGoldMine, IsHauntedGoldMine } from "../../types/GoldMine";
 import { Utility } from "../../util/Utility";
 import { modifier_generic_build_timer } from "../building/modifier_generic_build_timer";
-import { modifier_gold_mine_haunted } from "../modifier_gold_mine_haunted";
+import { modifier_gold_mine_haunted } from "../mine/modifier_gold_mine_haunted";
 import { modifier_acolyte_mining } from "./modifier_acolyte_mining";
 
 @registerModifier()

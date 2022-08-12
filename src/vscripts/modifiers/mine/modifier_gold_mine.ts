@@ -1,6 +1,6 @@
-import { BaseModifier, registerModifier } from "../lib/dota_ts_adapter";
-import { GoldMine } from "../types/GoldMine";
-import { modifier_generic_building } from "./building/modifier_generic_building";
+import { BaseModifier, registerModifier } from "../../lib/dota_ts_adapter";
+import { GoldMine } from "../../types/GoldMine";
+import { modifier_generic_building } from "../building/modifier_generic_building";
 
 @registerModifier()
 export class modifier_gold_mine extends modifier_generic_building {
