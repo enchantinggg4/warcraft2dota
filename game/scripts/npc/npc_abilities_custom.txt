@@ -4,6 +4,9 @@
 #base "abilities/worker_harvest_lumber.kv"
 #base "abilities/worker_deposit_payload.kv"
 
+
+#base "abilities/undead_build/undead_build_ziggurat.kv"
+
 "DOTAAbilities"
 {
 }

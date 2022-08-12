@@ -1,67 +1,88 @@
 
 "DOTAUnits"
 {
-    "npc_dota_building_necropolis"
+    "undead_crypt"
     {
         // General
         //----------------------------------------------------------------
         "BaseClass"					"npc_dota_creature"
-        "Model"						"models/heroes/undying/undying_tower.vmdl"
-        "ModelScale"				"1.3"
+        "Model"						"models/props_structures/bad_barracks001_melee.vmdl"
+        "ModelScale"				"1"
         "Level"						"1"
-        "HealthBarOffset"			"240"
-    
+        "HealthBarOffset"			"140"
+        "HasInventory"				"1"
+        "ConsideredHero"			"1"
+
+        "HasQueue"					"1"
+        
         // Abilities
         //----------------------------------------------------------------
-        "AbilityLayout"				"1"
-        "Ability1"				"train_acolyte"
-    
+        // "AbilityLayout"				""
+        
         // Armor
         //----------------------------------------------------------------
         "ArmorPhysical"				"5"
         "MagicalResistance"			"0"
-    
+        
         // Attack
         //----------------------------------------------------------------
         "AttackCapabilities"		"DOTA_UNIT_CAP_NO_ATTACK"
         "AttackDamageType"			"DAMAGE_TYPE_ArmorPhysical"
         "AttackDamageMin"			"0"
         "AttackDamageMax"			"0"
-    
+        
         // Bounty
         //----------------------------------------------------------------
         "BountyGoldMin"				"0.0"
         "BountyGoldMax"				"0.0"
-    
+        
         // Bounds
         //----------------------------------------------------------------
         "BoundsHullName"			"DOTA_HULL_SIZE_BARRACKS"
-        "RingRadius"				"140"
+        "RingRadius"				"220"
         "CollisionSize"				"144"
-    
+        
+        // Building Size
+        //----------------------------------------------------------------
+        "ConstructionSize"			"6"
+        "BlockPathingSize"			"4"
+        "Requires"					"Buildable Blight"
+        "Grid"
+        {
+            "Blight"
+            {
+                "Radius"			"768"
+                "RemoveOnDeath"		"false"
+            }
+        }
+        
+        // Building Cost Stats
+        //----------------------------------------------------------------
+        "GoldCost"					"200"
+        "LumberCost"				"50"
+        "BuildTime"					"60"
+        
         // Movement
         //----------------------------------------------------------------
-        "MovementCapabilities"		"DOTA_UNIT_CAP_MOVE_NONE"	// Needed to cast Point abilities
+        "MovementCapabilities"		"DOTA_UNIT_CAP_MOVE_GROUND"
         "MovementSpeed"				"0"
-    
+        
         // Status
         //----------------------------------------------------------------
-        "StatusHealth"				"1200"
-        "StatusHealthRegen"			"5"
+        "StatusHealth"				"1300"
+        "StatusHealthRegen"			"0"
         "StatusMana"				"100"
-        "StatusManaRegen"			"10"
-    
+        "StatusManaRegen"			"0"
+        
         // Vision
         //----------------------------------------------------------------
-        "VisionDaytimeRange"		"900"
-        "VisionNighttimeRange"		"600"
-    
-        // Team
+        "VisionDaytimeRange"		"1000"
+        "VisionNighttimeRange"		"1000"
+        
+        // Attack Damage types
         //----------------------------------------------------------------
-        "TeamName"					"DOTA_TEAM_NEUTRALS"
-        "CombatClassAttack"			"DOTA_COMBAT_CLASS_ATTACK_BASIC"
-        "CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_STRUCTURE"
-        "UnitRelationShipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_BUILDING"
-    
+        "AttackType"				"normal"
+        "ArmorType"					"fortified"
+        
     }
 }

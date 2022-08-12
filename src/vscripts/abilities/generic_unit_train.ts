@@ -10,6 +10,7 @@ export abstract class generic_unit_train extends BaseAbility {
 
 
     OnSpellStart() {
+
         const caster = this.GetCaster();
 
         const playerId = caster.GetMainControllingPlayer() as PlayerID;

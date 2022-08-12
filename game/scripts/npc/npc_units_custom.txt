@@ -3,6 +3,7 @@
 #base "units/undead/ghoul.kv"
 #base "units/undead/necropolis.kv"
 #base "units/undead/haunted_mine.kv"
+#base "units/undead/undead_crypt.kv"
 
 #base "units/neutral_gold_mine.kv"
 
