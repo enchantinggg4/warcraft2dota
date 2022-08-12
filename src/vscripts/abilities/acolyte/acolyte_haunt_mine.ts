@@ -60,10 +60,11 @@ export class acolyte_haunt_mine extends BaseAbility {
             player,
             1 // todo remove hardcode
         ) as HauntedGoldMine;
-        mine.workerList = [null, null, null, null, null]
+        mine.workerList = [undefined, undefined, undefined, undefined, undefined];
         // Create new mine with my team
 
-        mine.AddNewModifier(mine, undefined, modifier_gold_mine_haunted.name, { duration: -1, mineEntityId: Number(oldMine.entindex) });
+        mine.AddNewModifier(mine, undefined, modifier_gold_mine_haunted.name, { duration: -1, mineEntityId: +oldMine.entindex() });
+        mine.goldMineEntityId = oldMine.entindex()
     }
 
 }

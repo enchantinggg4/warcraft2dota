@@ -71,7 +71,6 @@ export class modifier_acolyte extends BaseModifier {
         if(!IsHauntedGoldMine(closestBuilding)) return;
 
         if(closestBuilding.HasModifier(modifier_gold_mine_haunted.name)){
-            print('c')
             this.AttachToMine(closestBuilding)
         }
     }

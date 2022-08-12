@@ -3,6 +3,7 @@ import { reloadable } from "./lib/tstl-utils";
 import { modifier_gold_mine } from "./modifiers/modifier_gold_mine";
 import { modifier_fake_invul } from "./modifiers/util/modifier_fake_invul";
 import { modifier_acolyte } from "./modifiers/worker/modifier_acolyte";
+import { GoldMine } from "./types/GoldMine";
 import { Spawns } from "./util/Spawns";
 import { Utility } from "./util/Utility";
 
@@ -161,7 +162,9 @@ export class GameMode {
             if(targetType == -1) continue;
 
             if(targetType == 0){
-                const mine = CreateUnitByName("npc_dota_building_neutral_gold_mine", entity.GetAbsOrigin(), false, undefined, undefined, DotaTeam.NEUTRALS);
+                const mine = CreateUnitByName("npc_dota_building_neutral_gold_mine", entity.GetAbsOrigin(), false, undefined, undefined, DotaTeam.NEUTRALS) as GoldMine;
+                mine.gold = 15000;
+
                 mine.AddNewModifier(mine, undefined, modifier_fake_invul.name, { duration: -1 });
                 mine.AddNewModifier(mine, undefined, modifier_gold_mine.name, { duration: -1 });
                 mine.RemoveModifierByName("modifier_invulnerable");

@@ -3,6 +3,11 @@ import { modifier_gold_mine_haunted } from "../modifiers/modifier_gold_mine_haun
 
 export interface HauntedGoldMine extends CDOTA_BaseNPC {
     workerList: (CDOTA_BaseNPC | undefined)[];
+    goldMineEntityId: EntityIndex;
+}
+
+export interface GoldMine extends CDOTA_BaseNPC {
+    gold: number;
 }
 
 export function IsHauntedGoldMine(npc: CDOTA_BaseNPC): npc is HauntedGoldMine {

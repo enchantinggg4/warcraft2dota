@@ -1,10 +1,9 @@
 import { BaseModifier, registerModifier } from "../lib/dota_ts_adapter";
+import { GoldMine } from "../types/GoldMine";
 import { modifier_generic_building } from "./building/modifier_generic_building";
 
 @registerModifier()
 export class modifier_gold_mine extends modifier_generic_building {
-    
-    gold_left: number = 15000;
     
     // Run when modifier instance is created
     OnCreated(params: any): void {
@@ -30,6 +29,6 @@ export class modifier_gold_mine extends modifier_generic_building {
     OnIntervalThink(): void {
 
         // TODO: eh?
-        this.SetStackCount(this.gold_left);
+        this.SetStackCount((this.GetParent() as GoldMine).gold);
     }
 }

@@ -1,5 +1,5 @@
 import { BaseModifier, registerModifier } from "../../lib/dota_ts_adapter";
-import { HauntedGoldMine, IsHauntedGoldMine } from "../../types/GoldMine";
+import { GoldMine, HauntedGoldMine, IsHauntedGoldMine } from "../../types/GoldMine";
 import { Utility } from "../../util/Utility";
 
 @registerModifier()
@@ -7,6 +7,8 @@ export class modifier_acolyte_mining extends BaseModifier {
 
     mineEntityId!: EntityIndex;
     mine!: HauntedGoldMine
+
+    goldMine!: GoldMine;
 
     // Run when modifier instance is created
     OnCreated(params: { mineEntityId: EntityIndex }): void {
@@ -19,6 +21,7 @@ export class modifier_acolyte_mining extends BaseModifier {
 
             if (IsHauntedGoldMine(mine)) {
                 this.mine = mine;
+                this.goldMine = EntIndexToHScript(mine.goldMineEntityId) as GoldMine;
                 this.Attach();
             } else {
                 this.Destroy();
@@ -32,14 +35,11 @@ export class modifier_acolyte_mining extends BaseModifier {
     }
 
     private Attach() {
-
         const myIndex = Utility.FindFreeSpot(this.mine);
         if (myIndex == undefined) {
             this.Destroy();
             return;
         }
-
-        print(myIndex)
 
         const rotateAngle = (360 / 5) * myIndex;
         const newPos: Vector = RotatePosition(Vector(0, 0, 0), QAngle(0, rotateAngle, 0), this.mine.GetForwardVector()).__mul(200);
@@ -83,7 +83,15 @@ export class modifier_acolyte_mining extends BaseModifier {
         const acolyte = this.GetParent();
         const playerId = acolyte.GetMainControllingPlayer() as PlayerID;
 
-        PlayerResource.SetGold(playerId, PlayerResource.GetGold(playerId) + 10, false); // todo extract +10
+        // todo extract +10
+        // todo extract mining logic
+        const mineAmount = 10; 
+        if(this.goldMine.gold > mineAmount){
+            PlayerResource.SetGold(playerId, PlayerResource.GetGold(playerId) + mineAmount, false);
+            this.goldMine.gold -= mineAmount;
+
+            print(this.goldMine.gold)
+        }
     }
 
 }
