@@ -3,6 +3,7 @@ import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "..
 import { modifier_generic_build_timer } from "../../modifiers/building/modifier_generic_build_timer";
 import { modifier_gold_mine } from "../../modifiers/modifier_gold_mine";
 import { modifier_gold_mine_haunted } from "../../modifiers/modifier_gold_mine_haunted";
+import { HauntedGoldMine } from "../../types/GoldMine";
 
 
 @registerModifier()
@@ -57,9 +58,11 @@ export class acolyte_haunt_mine extends BaseAbility {
             "npc_dota_building_haunted_mine",
             oldMine.GetAbsOrigin(),
             player,
-            10
-        );
+            1 // todo remove hardcode
+        ) as HauntedGoldMine;
+        mine.workerList = [null, null, null, null, null]
         // Create new mine with my team
+
         mine.AddNewModifier(mine, undefined, modifier_gold_mine_haunted.name, { duration: -1, mineEntityId: Number(oldMine.entindex) });
     }
 

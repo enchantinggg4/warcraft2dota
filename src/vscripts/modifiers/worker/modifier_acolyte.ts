@@ -1,5 +1,7 @@
 import { BaseModifier, registerModifier } from "../../lib/dota_ts_adapter";
-import { Utility } from "../../Utility";
+import { HauntedGoldMine, IsHauntedGoldMine } from "../../types/GoldMine";
+import { Utility } from "../../util/Utility";
+import { modifier_generic_build_timer } from "../building/modifier_generic_build_timer";
 import { modifier_gold_mine_haunted } from "../modifier_gold_mine_haunted";
 import { modifier_acolyte_mining } from "./modifier_acolyte_mining";
 
@@ -31,10 +33,12 @@ export class modifier_acolyte extends BaseModifier {
     }
 
     OnOrder(order: ModifierUnitEvent){
+        if(!Utility.IsMyOrder(this, order)) return;
         this.lastOrder = order.order_type
     }
 
-    OnUnitMoved(){
+    OnUnitMoved(order: ModifierUnitEvent){
+        if(!Utility.IsMyOrder(this, order)) return;
         this.timeWithoutMoving = 0;
     }    
 
@@ -43,7 +47,8 @@ export class modifier_acolyte extends BaseModifier {
             this.timeWithoutMoving += this.interval;
             
             if(this.timeWithoutMoving >= modifier_acolyte.timeForAction){
-                if(this.OnArrivedToTarget()) this.lastOrder = UnitOrder.BUYBACK;
+                this.OnArrivedToTarget();                
+                this.lastOrder = UnitOrder.BUYBACK;
                 this.timeWithoutMoving = 0;
             }
         }
@@ -52,19 +57,33 @@ export class modifier_acolyte extends BaseModifier {
     }
 
 
-    private OnArrivedToTarget(): boolean {
+    private OnArrivedToTarget() {
 
         // We need to find closest building to us
 
         const closestBuilding = Utility.FindClosestBuilding(this.GetParent().GetAbsOrigin(), this.GetParent().GetTeam(), 200);
 
-        if(!closestBuilding) return true;
+        if(!closestBuilding) return;
+
+        // If its building we dont care
+        if(closestBuilding.HasModifier(modifier_generic_build_timer.name)) return;
+
+        if(!IsHauntedGoldMine(closestBuilding)) return;
 
         if(closestBuilding.HasModifier(modifier_gold_mine_haunted.name)){
-            this.GetParent().AddNewModifier(this.GetParent(), undefined, modifier_acolyte_mining.name, { duration: -1})
+            print('c')
+            this.AttachToMine(closestBuilding)
         }
+    }
 
-        return true;
+
+
+    private AttachToMine(mine: HauntedGoldMine){
+
+        const workers = mine.workerList.filter(it => !!it).length;
+
+        if(workers >= 5) return; // no room
+        this.GetParent().AddNewModifier(this.GetParent(), undefined, modifier_acolyte_mining.name, { duration: -1, mineEntityId: +mine.GetEntityIndex()});
     }
 
 }

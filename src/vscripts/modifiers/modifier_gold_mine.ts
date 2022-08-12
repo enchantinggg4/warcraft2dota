@@ -1,7 +1,8 @@
 import { BaseModifier, registerModifier } from "../lib/dota_ts_adapter";
+import { modifier_generic_building } from "./building/modifier_generic_building";
 
 @registerModifier()
-export class modifier_gold_mine extends BaseModifier {
+export class modifier_gold_mine extends modifier_generic_building {
     
     gold_left: number = 15000;
     

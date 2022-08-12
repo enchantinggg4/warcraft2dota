@@ -1,10 +1,10 @@
 import { BuildManager } from "./BuildManager";
 import { reloadable } from "./lib/tstl-utils";
 import { modifier_gold_mine } from "./modifiers/modifier_gold_mine";
-import { modifier_gold_mine_haunted } from "./modifiers/modifier_gold_mine_haunted";
 import { modifier_fake_invul } from "./modifiers/util/modifier_fake_invul";
 import { modifier_acolyte } from "./modifiers/worker/modifier_acolyte";
-import { Utility } from "./Utility";
+import { Spawns } from "./util/Spawns";
+import { Utility } from "./util/Utility";
 
 const heroSelectionTime = 20;
 
@@ -32,7 +32,7 @@ export class GameMode {
         // Register event listeners for dota engine events
         ListenToGameEvent("game_rules_state_change", () => this.OnStateChange(), undefined);
         // ListenToGameEvent("dota_player_spawned", event => this.OnPlayerSpawned(event), undefined);
-        ListenToGameEvent("npc_spawned", event => this.OnPlayerSpawned(event), undefined);
+        ListenToGameEvent("npc_spawned", event => this.OnNpcSpawn(event), undefined);
 
         // Register event listeners for events from the UI
         CustomGameEventManager.RegisterListener("ui_panel_closed", (_, data) => {
@@ -97,15 +97,15 @@ export class GameMode {
         // Do some stuff here
     }
 
-    private OnPlayerSpawned(event: NpcSpawnedEvent) {
+    private OnNpcSpawn(event: NpcSpawnedEvent) {
 
 
         if(!IsServer()) return;
-
         const npc = EntIndexToHScript(event.entindex) as CDOTA_BaseNPC;
 
+        Spawns.SpawnAcolyte(npc);
+
         if(npc.HasAbility("train_acolyte")){
-            print("ITS NECRPO SAWSPN")
             npc.FindAbilityByName("train_acolyte")?.SetLevel(1);
             return;
         }
@@ -140,8 +140,13 @@ export class GameMode {
 
         for(let i = 0; i < 3; i++){
             const acolyte: CDOTA_BaseNPC = CreateUnitByName("npc_dota_undead_acolyte", position, true, player, player, player.GetTeam());
-            acolyte.AddNewModifier(acolyte, undefined, modifier_acolyte.name, { duration: - 1});
             acolyte.SetControllableByPlayer(playerId, true);
+        }
+
+        for(let i = 0; i < 1; i++){
+            const ghoul: CDOTA_BaseNPC = CreateUnitByName("npc_dota_undead_ghoul", position, true, player, player, player.GetTeam());
+            // ghoul.AddNewModifier(ghoul, undefined, modifier_acolyte.name, { duration: - 1});
+            ghoul.SetControllableByPlayer(playerId, true);
         }
     }
 
@@ -156,7 +161,6 @@ export class GameMode {
             if(targetType == -1) continue;
 
             if(targetType == 0){
-                print("oki we have a gold mine spot! ;)")
                 const mine = CreateUnitByName("npc_dota_building_neutral_gold_mine", entity.GetAbsOrigin(), false, undefined, undefined, DotaTeam.NEUTRALS);
                 mine.AddNewModifier(mine, undefined, modifier_fake_invul.name, { duration: -1 });
                 mine.AddNewModifier(mine, undefined, modifier_gold_mine.name, { duration: -1 });
