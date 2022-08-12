@@ -22,6 +22,7 @@ export class GameMode {
     public static Precache(this: void, context: CScriptPrecacheContext) {
         PrecacheResource("particle", "particles/units/heroes/hero_meepo/meepo_earthbind_projectile_fx.vpcf", context);
         PrecacheResource("soundfile", "soundevents/game_sounds_heroes/game_sounds_meepo.vsndevts", context);
+        PrecacheResource("particle_folder", "particles/buildinghelper", context);
     }
 
     public static Activate(this: void) {
@@ -30,6 +31,7 @@ export class GameMode {
         GameRules.Addon = new GameMode();
     }
 
+    
     constructor() {
         this.configure();
 

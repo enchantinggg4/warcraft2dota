@@ -1,10 +1,19 @@
 "use strict"
 var right_click_repair = CustomNetTables.GetTableValue("building_settings", "right_click_repair").value;
 
+function HasModifier(entIndex, modifierName) {
+    var nBuffs = Entities.GetNumBuffs(entIndex);
+    for (var i = 0; i < nBuffs; i++) {
+        if (Buffs.GetName(entIndex, Entities.GetBuff(entIndex, i)) == modifierName)
+            return true;
+    }
+    ;
+    return false;
+}
+
 function GetMouseTarget()
 {
     var mouseEntities = GameUI.FindScreenEntities( GameUI.GetCursorPosition() )
-    var localHeroIndex = Players.GetPlayerHeroEntityIndex( Players.GetLocalPlayer() )
 
     for ( var e of mouseEntities )
     {
@@ -29,6 +38,7 @@ function OnRightButtonPressed()
     var mainSelected = Players.GetLocalPlayerPortraitUnit() 
     var targetIndex = GetMouseTarget()
     var pressedShift = GameUI.IsShiftDown()
+    var cursor = GameUI.GetCursorPosition();
 
     // Builder Right Click
     if ( IsBuilder( mainSelected ) )
@@ -41,6 +51,13 @@ function OnRightButtonPressed()
             GameEvents.SendCustomGameEventToServer( "building_helper_repair_command", {targetIndex: targetIndex, queue: pressedShift})
             return true
         }
+    }
+
+    if (HasModifier(mainSelected, "modifier_harvest_tree")) {
+        GameEvents.SendCustomGameEventToServer("right_click_order", {
+            position: Game.ScreenXYToWorld(cursor[0], cursor[1]),
+            selected: selectedEntities.map(it => +it)
+        });
     }
 
     return false
@@ -57,8 +74,11 @@ function IsCustomBuilding(entIndex) {
 
 function IsBuilder(entIndex) {
     var tableValue = CustomNetTables.GetTableValue( "builders", entIndex.toString())
+    $.Msg(tableValue)
     return (tableValue !== undefined) && (tableValue.IsBuilder == 1)
 }
+
+
 
 function IsAlliedUnit(entIndex, targetIndex) {
     return (Entities.GetTeamNumber(entIndex) == Entities.GetTeamNumber(targetIndex))
