@@ -1,0 +1,57 @@
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf37:version{f9a1c8c4-159b-4786-b740-4d1a118c8f46} -->
+{
+	_class = "CParticleSystemDefinition"
+	m_bShouldHitboxesFallbackToRenderBounds = false
+	m_nMaxParticles = 4
+	m_hFallback = resource:"particles/custom/undead/blight_aura_mid.vpcf"
+	m_nFallbackMaxCount = 2
+	m_flConstantLifespan = 99999.0
+	m_nBehaviorVersion = 12
+	m_controlPointConfigurations = 
+	[
+		{
+			m_name = "preview"
+			m_drivers = 
+			[
+				{
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_entityName = "self"
+				},
+			]
+		},
+	]
+	m_Children = 
+	[
+		{
+			m_ChildRef = resource:"particles/custom/undead/blight_aura_ground01.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/custom/undead/blight_aura_ground03.vpcf"
+			m_bDisableChild = true
+		},
+		{
+			m_ChildRef = resource:"particles/custom/undead/blight_aura_smoke01.vpcf"
+			m_bDisableChild = true
+		},
+		{
+			m_ChildRef = resource:"particles/custom/undead/blight_aura_smoke02.vpcf"
+			m_bDisableChild = true
+		},
+		{
+			m_ChildRef = resource:"particles/custom/undead/blight_ambient_mouthgas.vpcf"
+			m_bDisableChild = true
+		},
+		{
+			m_ChildRef = resource:"particles/custom/undead/blight_aura_flies.vpcf"
+			m_bDisableChild = true
+		},
+		{
+			m_ChildRef = resource:"particles/custom/undead/blight_transform.vpcf"
+			m_bDisableChild = true
+		},
+		{
+			m_bEndCap = true
+			m_ChildRef = resource:"particles/custom/undead/blight_transform_reverse.vpcf"
+		},
+	]
+}

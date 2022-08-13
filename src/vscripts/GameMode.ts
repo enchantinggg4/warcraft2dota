@@ -3,11 +3,12 @@ import { reloadable } from "./lib/tstl-utils";
 import { modifier_gold_mine } from "./modifiers/mine/modifier_gold_mine";
 import { modifier_fake_invul } from "./modifiers/util/modifier_fake_invul";
 import { modifier_acolyte } from "./modifiers/worker/modifier_acolyte";
-import { GoldMine } from "./types/GoldMine";
+import { GoldMine, Resource } from "./types/GoldMine";
 import { CustomGameEvents } from "./util/CustomGameEvents";
 import { Spawns } from "./util/Spawns";
 import { Utility } from "./util/Utility";
 import { InstallLumber } from "./lib/lumber"
+import { ResourceManager } from "./ResourceManager";
 
 const heroSelectionTime = 20;
 
@@ -31,7 +32,7 @@ export class GameMode {
         GameRules.Addon = new GameMode();
     }
 
-    
+
     constructor() {
         this.configure();
 
@@ -131,9 +132,12 @@ export class GameMode {
 
     private SpawnUndead(playerId: PlayerID) {
         const player = PlayerResource.GetPlayer(playerId)!;
+
+        ResourceManager.Deposit(playerId, Resource.LUMBER, 400);
         // Create throne
 
 
+        
 
         // npc_dota_building_necropolis
         const closestMine = Utility.FindClosestFreeMine(player.GetAbsOrigin());
@@ -141,6 +145,8 @@ export class GameMode {
         const castle = CreateUnitByName("npc_dota_building_necropolis", player.GetAbsOrigin(), false, player, player, player.GetTeam());
         castle.SetControllableByPlayer(playerId, true);
         const position: Vector = player.GetAbsOrigin().__add(player.GetForwardVector().__mul(300));
+
+        Blight.Create(castle, "tiny");
 
 
         for (let i = 0; i < 3; i++) {

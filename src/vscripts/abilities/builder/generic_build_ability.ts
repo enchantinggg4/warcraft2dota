@@ -14,9 +14,12 @@ export abstract class generic_build_ability extends BaseAbility {
         return AbilityBehavior.NO_TARGET | AbilityBehavior.IMMEDIATE
     }
 
+    public GetKeyValue<T = unknown>(key: string): T {
+        return (this.GetAbilityKeyValues() as any)[key];
+    }
 
 
-    protected GetBuildInfo(): BuildInfo {
+    public GetBuildInfo(): BuildInfo {
         return {
             gold: this.GetSpecialValueFor("gold_cost"),
             lumber: this.GetSpecialValueFor("lumber_cost"),

@@ -1,6 +1,7 @@
 import "./lib/timers";
 import "./lib/notifications";
 import "libraries/buildinghelper"
+import "libraries/blight"
 import { GameMode } from "./GameMode";
 
 // Connect GameMode.Activate and GameMode.Precache to the dota engine

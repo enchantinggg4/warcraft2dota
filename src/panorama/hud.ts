@@ -33,7 +33,7 @@ GameEvents.Subscribe("example_event", (data: NetworkedData<ExampleEventData>) =>
  */
 function toArray<T>(obj: Record<number, T>): T[] {
     const result = [];
-    
+
     let key = 1;
     while (obj[key]) {
         result.push(obj[key]);
@@ -46,7 +46,12 @@ function toArray<T>(obj: Record<number, T>): T[] {
 
 $.RegisterForUnhandledEvent("Cancelled", () => {
     // TODO: send event
-
     GameEvents.SendCustomGameEventToServer<any>("cancel_current_action", { PlayerID: Game.GetLocalPlayerID(), SelectedEntity: Players.GetSelectedEntities(Game.GetLocalPlayerID())[0] });
-    
 })
+
+
+GameEvents.Subscribe("lumber_changed", (data: any) => {
+    const myNumber = data.lumber;
+    const lb = $("#LumberContainer") as LabelPanel;
+    lb.text = `Lumber: ${myNumber}`
+});

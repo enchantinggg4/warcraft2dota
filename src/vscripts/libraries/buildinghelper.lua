@@ -1721,6 +1721,16 @@ function BuildingHelper:SetGridType(size, location, grid_type, option)
     end     
 end
 
+function BuildingHelper:BroadcastGridNavUpdate(y, x, new_grid_type) then
+    -- todo kappa
+    -- local players = PlayerResource:GetPlayerCount()
+    local player = PlayerResource:GetPlayer(0)
+    if player then
+        BuildingHelper:print("Sending GNV patch to player "..playerID)
+        CustomGameEventManager:Send_ServerToPlayer(player, "gnv_patch", { y=y, x=x, ngt=new_grid_type })
+    end
+end
+
 -- Alternative with radius
 function BuildingHelper:SetGridTypeRadius(radius, location, grid_type, option)
     if not radius or radius == 0 then return end
@@ -1949,6 +1959,10 @@ end
 -- bQueued will be true if the command was done with shift pressed
 -- If bQueued is false, the queue is cleared and this building is put on top
 function BuildingHelper:AddToQueue(builder, location, bQueued)
+
+    print("Hello its addtoqueue")
+    print(location)
+
     local playerID = builder:GetMainControllingPlayer()
     local player = PlayerResource:GetPlayer(playerID)
     local playerTable = BuildingHelper:GetPlayerTable(playerID)
