@@ -3,6 +3,44 @@ import { Resource } from "./types/GoldMine";
 
 export class ResourceManager {
 
+    public static GetGold(playerId: PlayerID): number {
+        return PlayerResource.GetGold(playerId)
+    }
+
+    public static GetLumber(playerId: PlayerID): number {
+        return PlayerResource.GetLumber(playerId)
+    }
+
+    public static GetFoodLimit(playerId: PlayerID): number {
+        // tODO
+        return 100;
+        // return PlayerResource.GetLumber(playerId)
+    }
+
+    public static GetFoodUsed(playerId: PlayerID): number {
+        // tODO
+        return 10;
+        // return PlayerResource.GetLumber(playerId)
+    }
+
+    public static HasEnoughFood(playerId: PlayerID, foodCost: number){
+        // todo
+        return true;
+    }
+
+    public static ModifyFoodUsed(playerId: PlayerID, foodCost: number){
+        // todo
+        return;
+    }
+
+    public static HasEnoughLumber(playerId: PlayerID, lumber: number): boolean { 
+        print(lumber)
+        print(this.GetLumber(playerId))
+        print(')')
+        return this.GetLumber(playerId) >= lumber
+    }
+
+
     public static Deposit(playerId: PlayerID, resource: Resource, amount: number) {
         if (resource === Resource.GOLD) {
             this.ModifyResources(playerId, amount, 0);

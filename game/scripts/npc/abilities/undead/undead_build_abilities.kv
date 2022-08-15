@@ -1,0 +1,295 @@
+// Undead Buildings
+// undead_crypt - No requirements
+// undead_temple_of_the_damned - Requires undead_graveyard and undead_halls_of_the_dead
+// undead_slaughterhouse - Requires undead_graveyard and undead_halls_of_the_dead
+// undead_sacrificial_pit - Requires undead_halls_of_the_dead
+// undead_boneyard - Requires undead_sacrificial_pit and undead_black_citadel
+
+// Item Abilities
+// undead_altar_of_darkness - No requirements
+// undead_haunted_gold_mine - No requirements
+// undead_graveyard - No requirements
+// undead_necropolis - No requirements
+	// undead_halls_of_the_dead - Upgrade
+	// undead_black_citadel - Upgrade, Requires undead_altar_of_darkness
+// undead_ziggurat - No requirements
+	// undead_nerubian_tower - Upgrade
+	// undead_spirit_tower - Upgrade, Requires undead_graveyard
+// undead_tomb_of_relics - No requirements
+"DOTAAbilities"
+{
+    "undead_build_crypt"
+    {
+        "BaseClass"             		"ability_datadriven"
+        "AbilityTextureName"			"undead_build_crypt"
+        "MaxLevel" 						"1"
+
+        "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+
+        // BuildingHelper info
+        "Building"						"1" //bool
+        "BuildTime"						"60.0"
+        "AbilityCastRange"				"200"
+        "Scale"							"0" //bool
+        "PlayerCanControl"				"1" //bool
+
+        "UnitName"						"undead_crypt"
+        "AbilityCooldown"				"0"
+        "AbilityGoldCost"				"200"
+        // End of BuildingHelper info
+
+        "AbilitySpecial"
+        {
+            "01"
+            {
+                "var_type"				"FIELD_FLOAT"
+                "build_time"			"60.0"
+            }
+            "02"
+            {
+                "var_type"				"FIELD_INTEGER"
+                "gold_cost"				"200"
+            }
+            "03"
+            {
+                "var_type"				"FIELD_INTEGER"
+                "lumber_cost"			"50"
+            }
+        }
+        
+        "OnSpellStart"
+        {
+            "RunScript"
+            {
+                "ScriptFile"	"units/builder.lua"
+                "Function"		"Build"
+            }
+        }
+    }
+
+    "undead_build_temple_of_the_damned_disabled"
+    {
+        "BaseClass"             		"ability_datadriven"
+        "AbilityTextureName"			"undead_build_temple_of_the_damned"
+        "MaxLevel" 						"0"
+    }
+
+    "undead_build_temple_of_the_damned"
+    {
+        "BaseClass"             		"ability_datadriven"
+        "AbilityTextureName"			"undead_build_temple_of_the_damned"
+        "MaxLevel" 						"1"
+
+        "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+
+        // BuildingHelper info
+        "Building"						"1" //bool
+        "BuildTime"						"60.0"
+        "AbilityCastRange"				"200"
+        "Scale"							"0" //bool
+        "PlayerCanControl"				"1" //bool
+
+        "UnitName"						"undead_temple_of_the_damned"
+        "AbilityCooldown"				"0"
+        "AbilityGoldCost"				"155"
+        // End of BuildingHelper info
+
+        "AbilitySpecial"
+        {
+            "01"
+            {
+                "var_type"				"FIELD_FLOAT"
+                "build_time"			"60.0"
+            }
+            "02"
+            {
+                "var_type"				"FIELD_INTEGER"
+                "gold_cost"				"155"
+            }
+            "03"
+            {
+                "var_type"				"FIELD_INTEGER"
+                "lumber_cost"			"140"
+            }
+        }
+
+        "OnSpellStart"
+        {
+            "RunScript"
+            {
+                "ScriptFile"	"units/builder.lua"
+                "Function"		"Build"
+            }
+        }
+    }
+
+    "undead_build_slaughterhouse_disabled"
+    {
+        "BaseClass"             		"ability_datadriven"
+        "AbilityTextureName"			"undead_build_slaughterhouse"
+        "MaxLevel" 						"0"
+    }
+
+    "undead_build_slaughterhouse"
+    {
+        "BaseClass"             		"ability_datadriven"
+        "AbilityTextureName"			"undead_build_slaughterhouse"
+        "MaxLevel" 						"1"
+
+        "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+
+        // BuildingHelper info
+        "Building"						"1" //bool 
+        "BuildTime"						"60.0"
+        "AbilityCastRange"				"200"
+        "Scale"							"0" //bool
+        "PlayerCanControl"				"1" //bool
+
+        "UnitName"						"undead_slaughterhouse"
+        "AbilityCooldown"				"0"
+        "AbilityGoldCost"				"140"
+        // End of BuildingHelper info
+
+        "AbilitySpecial"
+        {
+            "01"
+            {
+                "var_type"				"FIELD_FLOAT"
+                "build_time"			"60.0"
+            }
+            "02"
+            {
+                "var_type"				"FIELD_INTEGER"
+                "gold_cost"				"140"
+            }
+            "03"
+            {
+                "var_type"				"FIELD_INTEGER"
+                "lumber_cost"			"135"
+            }
+        }
+
+        "OnSpellStart"
+        {
+            "RunScript"
+            {
+                "ScriptFile"	"units/builder.lua"
+                "Function"		"Build"
+            }
+        }
+    }
+
+    "undead_build_sacrificial_pit_disabled"
+    {
+        "BaseClass"             		"ability_datadriven"
+        "AbilityTextureName"			"undead_build_sacrificial_pit"
+        "MaxLevel" 						"0"
+    }
+
+    "undead_build_sacrificial_pit"
+    {
+        "BaseClass"             		"ability_datadriven"
+        "AbilityTextureName"			"undead_build_sacrificial_pit"
+        "MaxLevel" 						"1"
+
+        "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+
+        // BuildingHelper info
+        "Building"						"1" //bool
+        "BuildTime"						"45.0"
+        "AbilityCastRange"				"200"
+        "Scale"							"0" //bool
+        "PlayerCanControl"				"1" //bool
+
+        "UnitName"						"undead_sacrificial_pit"
+        "AbilityCooldown"				"0"
+        "AbilityGoldCost"				"75"
+        // End of BuildingHelper info
+
+        "AbilitySpecial"
+        {
+            "01"
+            {
+                "var_type"				"FIELD_FLOAT"
+                "build_time"			"45.0"
+            }
+            "02"
+            {
+                "var_type"				"FIELD_INTEGER"
+                "gold_cost"				"75"
+            }
+            "03"
+            {
+                "var_type"				"FIELD_INTEGER"
+                "lumber_cost"			"150"
+            }
+        }
+        
+        "OnSpellStart"
+        {
+            "RunScript"
+            {
+                "ScriptFile"	"units/builder.lua"
+                "Function"		"Build"
+            }
+        }
+    }
+
+    "undead_build_boneyard_disabled"
+    {
+        "BaseClass"             		"ability_datadriven"
+        "AbilityTextureName"			"undead_build_boneyard"
+        "MaxLevel" 						"0"
+    }
+
+    "undead_build_boneyard"
+    {
+        "BaseClass"             		"ability_datadriven"
+        "AbilityTextureName"			"undead_build_boneyard"
+        "MaxLevel" 						"1"
+
+        "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+
+        // BuildingHelper info
+        "Building"						"1" //bool
+        "BuildTime"						"70.0"
+        "AbilityCastRange"				"200"
+        "Scale"							"0" //bool
+        "PlayerCanControl"				"1" //bool
+
+        "ModelRotation"					"135.0"
+
+        "UnitName"						"undead_boneyard"
+        "AbilityCooldown"				"0"
+        "AbilityGoldCost"				"175"
+        // End of BuildingHelper info
+
+        "AbilitySpecial"
+        {
+            "01"
+            {
+                "var_type"				"FIELD_FLOAT"
+                "build_time"			"70.0"
+            }
+            "02"
+            {
+                "var_type"				"FIELD_INTEGER"
+                "gold_cost"				"175"
+            }
+            "03"
+            {
+                "var_type"				"FIELD_INTEGER"
+                "lumber_cost"			"200"
+            }
+        }
+
+        "OnSpellStart"
+        {
+            "RunScript"
+            {
+                "ScriptFile"	"units/builder.lua"
+                "Function"		"Build"
+            }
+        }
+    }
+}

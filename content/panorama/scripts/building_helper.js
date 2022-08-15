@@ -411,7 +411,7 @@ function CreateErrorMessage(msg) {
 
 function PatchGNV(msg){
     Root.GridNav[msg.y + 256][msg.x + 256] = msg.ngt;
-    $.Msg(`${msg.x} ${msg.y} ${msg.ngt} patched`);
+    // $.Msg(`${msg.x} ${msg.y} ${msg.ngt} patched`);
 }
 
 function RegisterGNV(msg) {

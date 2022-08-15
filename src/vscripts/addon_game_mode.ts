@@ -1,5 +1,6 @@
 import "./lib/timers";
 import "./lib/notifications";
+import "./lib/lumber"
 import "libraries/buildinghelper"
 import "libraries/blight"
 import { GameMode } from "./GameMode";

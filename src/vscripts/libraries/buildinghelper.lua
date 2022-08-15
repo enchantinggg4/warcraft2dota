@@ -924,7 +924,6 @@ function BuildingHelper:PlaceBuilding(player, name, location, construction_size,
     BuildingHelper:SnapToGrid(construction_size, location)
     local playerID = type(player)=="number" and player or player:GetPlayerID() --accept pass player ID or player Handle
     local player = PlayerResource:GetPlayer(playerID)
-    local playersHero = PlayerResource:GetSelectedHeroEntity(playerID)
     BuildingHelper:print("PlaceBuilding for playerID ".. playerID)
 
     -- Spawn point obstructions before placing the building
@@ -935,10 +934,10 @@ function BuildingHelper:PlaceBuilding(player, name, location, construction_size,
     local model_location = Vector(location.x, location.y, location.z + model_offset)
 
     -- Spawn the building
-    local building = CreateUnitByName(name, model_location, false, playersHero, player, playersHero:GetTeamNumber())
+    local building = CreateUnitByName(name, model_location, false, player, player, player:GetTeamNumber())
     building:SetControllableByPlayer(playerID, true)
     building:SetNeverMoveToClearSpace(true)
-    building:SetOwner(playersHero)
+    building:SetOwner(player)
     building:SetAbsOrigin(model_location)
     building.construction_size = construction_size
     building.blockers = gridNavBlockers
@@ -957,6 +956,10 @@ function BuildingHelper:PlaceBuilding(player, name, location, construction_size,
     end
 
     BuildingHelper:AddBuildingToPlayerTable(playerID, building)
+
+    function building:IsUnderConstruction() 
+        return false
+    end
 
     -- Return the created building
     return building
@@ -1049,7 +1052,6 @@ function BuildingHelper:StartBuilding(builder)
     local unitName = work.name
     local location = work.location
     local player = PlayerResource:GetPlayer(playerID)
-    local playersHero = PlayerResource:GetSelectedHeroEntity(playerID)
     local buildingTable = work.buildingTable
     local construction_size = buildingTable:GetVal("ConstructionSize", "number")
     local pathing_size = buildingTable:GetVal("BlockPathingSize", "number")
@@ -1080,7 +1082,7 @@ function BuildingHelper:StartBuilding(builder)
 
     -- For overriden ghosts we need to create another unit
     if building:GetUnitName() ~= unitName then
-        building = CreateUnitByName(unitName, location, false, playersHero, player, builder:GetTeam())
+        building = CreateUnitByName(unitName, location, false, player, player, builder:GetTeam())
         building:SetNeverMoveToClearSpace(true)
     else
         building:RemoveModifierByName("modifier_out_of_world")
@@ -1127,7 +1129,7 @@ function BuildingHelper:StartBuilding(builder)
     local bPlayerCanControl = buildingTable:GetVal("PlayerCanControl", "bool")
     if bPlayerCanControl then
         building:SetControllableByPlayer(playerID, true)
-        building:SetOwner(playersHero)
+        building:SetOwner(player)
     end
 
     -- Start construction
@@ -1694,6 +1696,7 @@ function BuildingHelper:SetGridType(size, location, grid_type, option)
         for y = lowerBoundY, upperBoundY do
             for x = lowerBoundX, upperBoundX do
                 BuildingHelper.Grid[y][x] = BuildingHelper.GridTypes[grid_type]
+                BuildingHelper:BroadcastGridNavUpdate(y, x, BuildingHelper.Grid[y][x])
             end
         end
 
@@ -1704,6 +1707,7 @@ function BuildingHelper:SetGridType(size, location, grid_type, option)
                 local hasGridType = BuildingHelper:CellHasGridType(x,y,grid_type)
                 if not hasGridType then
                     BuildingHelper.Grid[y][x] = BuildingHelper.Grid[y][x] + BuildingHelper.GridTypes[grid_type]
+                    BuildingHelper:BroadcastGridNavUpdate(y, x, BuildingHelper.Grid[y][x])
                 end
             end
         end
@@ -1715,20 +1719,11 @@ function BuildingHelper:SetGridType(size, location, grid_type, option)
                 local hasGridType = BuildingHelper:CellHasGridType(x,y,grid_type)
                 if hasGridType then
                     BuildingHelper.Grid[y][x] = BuildingHelper.Grid[y][x] - BuildingHelper.GridTypes[grid_type]
+                    BuildingHelper:BroadcastGridNavUpdate(y, x, BuildingHelper.Grid[y][x])
                 end
             end
         end
     end     
-end
-
-function BuildingHelper:BroadcastGridNavUpdate(y, x, new_grid_type) then
-    -- todo kappa
-    -- local players = PlayerResource:GetPlayerCount()
-    local player = PlayerResource:GetPlayer(0)
-    if player then
-        BuildingHelper:print("Sending GNV patch to player "..playerID)
-        CustomGameEventManager:Send_ServerToPlayer(player, "gnv_patch", { y=y, x=x, ngt=new_grid_type })
-    end
 end
 
 -- Alternative with radius
@@ -1762,6 +1757,7 @@ function BuildingHelper:SetGridTypeRadius(radius, location, grid_type, option)
                 local distance = (current_pos - location):Length2D()
                 if distance <= radius then
                     BuildingHelper.Grid[y][x] = BuildingHelper.GridTypes[grid_type]
+                    BuildingHelper:BroadcastGridNavUpdate(y, x, BuildingHelper.Grid[y][x])
                 end
             end
         end
@@ -1776,6 +1772,7 @@ function BuildingHelper:SetGridTypeRadius(radius, location, grid_type, option)
                     local distance = (current_pos - location):Length2D()
                     if distance <= radius then
                         BuildingHelper.Grid[y][x] = BuildingHelper.Grid[y][x] + BuildingHelper.GridTypes[grid_type]
+                        BuildingHelper:BroadcastGridNavUpdate(y, x, BuildingHelper.Grid[y][x])
                     end
                 end
             end
@@ -1791,12 +1788,25 @@ function BuildingHelper:SetGridTypeRadius(radius, location, grid_type, option)
                     local distance = (current_pos - location):Length2D()
                     if distance <= radius then
                         BuildingHelper.Grid[y][x] = BuildingHelper.Grid[y][x] - BuildingHelper.GridTypes[grid_type]
+                        BuildingHelper:BroadcastGridNavUpdate(y, x, BuildingHelper.Grid[y][x])
                     end
                 end
             end
         end
     end     
 end
+
+
+
+function BuildingHelper:BroadcastGridNavUpdate(y, x, new_grid_type)
+    -- todo kappa
+    -- local players = PlayerResource:GetPlayerCount()
+    local player = PlayerResource:GetPlayer(0)
+    if player then
+        CustomGameEventManager:Send_ServerToPlayer(player, "gnv_patch", { y=y, x=x, ngt=new_grid_type })
+    end
+end
+
 
 -- Returns a string with each of the grid types of the cell, mostly to debug
 function BuildingHelper:GetCellGridTypes(x,y)

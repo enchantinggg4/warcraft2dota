@@ -56,6 +56,7 @@ function Blight:Create(unit, size)
                 local distance = (current_pos - location):Length2D()
                 if distance <= radius then
                     BuildingHelper.Grid[y][x] = BuildingHelper.Grid[y][x] + BuildingHelper.GridTypes["BLIGHT"]
+                    BuildingHelper:BroadcastGridNavUpdate(y, x, BuildingHelper.Grid[y][x])
                     
                     -- Make particle effects every particle_spread
                     if y%2==0 and x%2==0 and not Blight:GridHasParticle(x,y) then

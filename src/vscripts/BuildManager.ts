@@ -1,7 +1,7 @@
 import { generic_build_ability } from "./abilities/builder/generic_build_ability";
 import { modifier_generic_build_timer } from "./modifiers/building/modifier_generic_build_timer";
 import { ResourceManager } from "./ResourceManager";
-import { Units } from "./util/Units";
+import { UnitMap } from "./util/UnitMap";
 import { SendErrorMessage } from "./util/Utility";
 
 export class BuildManager {
@@ -74,7 +74,7 @@ export class BuildManager {
 
 
                 // Blight check
-                if (building_name.includes("undead") && building_name != Units.NECROPOLIS) {
+                if (building_name.includes("undead") && building_name != UnitMap.NECROPOLIS) {
                     const bHasBlight = BuildingHelper.PositionHasBlight(vPos)
                     print(`Blight check for ${building_name}: ${bHasBlight}`)
                     if (!bHasBlight) {

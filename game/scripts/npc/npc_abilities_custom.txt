@@ -5,7 +5,9 @@
 #base "abilities/worker_deposit_payload.kv"
 
 
-#base "abilities/undead_build/undead_build_ziggurat.kv"
+#base "abilities/undead/undead_train_abilities.kv"
+#base "abilities/undead/undead_build_abilities.kv"
+#base "abilities/undead/undead_abilities.kv"
 
 "DOTAAbilities"
 {

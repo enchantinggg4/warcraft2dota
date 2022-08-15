@@ -1,0 +1,2286 @@
+//=================================================================================
+// Ability: Cannibalize
+// Description: "Consumes a nearby corpse to heal <Acan,DataA1> hit points per second."
+//=================================================================================
+"undead_cannibalize"
+{
+	"BaseClass"					"ability_datadriven"
+	"AbilityTextureName"		"undead_research_cannibalize"
+	"MaxLevel"					"1"
+		
+	"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_CHANNELLED"
+	"AbilityCastAnimation"		"ACT_DOTA_CAST_ABILITY_2"
+	"AbilityChannelTime"		"33"
+		
+	"AbilityCastRange"			"50"
+	"AbilityCastPoint"			"0"
+	"AbilityCooldown"			"0"
+	"AbilityManaCost"			"0"
+	"AbilityMultiOrder"			"1"
+
+	"AbilityMultiOrder"			"1"	
+	"RequiresCorpsesAround"   	"800"
+	"RequiresHealthDeficit"		"self"
+		
+	"AbilitySpecial"
+	{
+		"01"
+		{
+			"var_type"		"FIELD_INTEGER"
+			"duration"		"33"
+		}
+		"02"
+		{
+			"var_type"		"FIELD_INTEGER"
+			"health_per_second"		"10" //TODO: 15 on abominations
+		}
+		"03"
+		{
+			"var_type"		"FIELD_INTEGER"
+			"search_radius"			"800"
+		}
+		// The unit'll find the nearest corpse in this radius.
+		// According to classic.battle.net, they'll also eat corpses from Meat Wagons. The most injured units will be prioritized should you order a group to cannibalize.
+	}
+	
+	"precache"
+	{
+		"particle"  "particles/items2_fx/soul_ring_blood.vpcf"
+	}
+	
+	"OnSpellStart"
+	{
+		"RunScript"
+		{
+			"ScriptFile" "units/undead/ghoul.lua"
+			"Function"	"CannibalizeStart"
+		}
+	}
+	
+	"Modifiers"
+	{
+		"modifier_cannibalize"
+		{
+			"Properties"
+			{
+				"MODIFIER_PROPERTY_HEALTH_REGEN_CONSTANT" "%health_per_second"
+			}
+		}
+
+		"modifier_cannibalize_properties"
+		{
+			"IsHidden" "1"
+			
+			"OnOrder"
+			{			
+				"RunScript"
+				{
+					"ScriptFile"	"units/undead/ghoul.lua"
+					"Function"		"CannibalizeEnd"
+				}		
+			}
+
+			"Properties"
+			{
+				"MODIFIER_PROPERTY_DISABLE_AUTOATTACK" "1"
+			}
+		}
+	}
+}			
+
+//=================================================================================
+// Ability: Ghoul Frenzy
+// Description: "Increases the attack rate of Ghouls by <Rugf,base1,%>%, and increases their movement speed."
+//=================================================================================
+"undead_ghoul_frenzy"
+{
+	"BaseClass"					"ability_datadriven"
+	"AbilityTextureName"		"undead_research_ghoul_frenzy"
+	"MaxLevel"					"1"
+		
+	"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		
+	"AbilitySpecial"
+	{
+		"01"
+		{
+			"var_type"				"FIELD_FLOAT"
+			"base_attack_time"		"1.05"
+		}
+		"02"
+		{
+			"var_type"				"FIELD_INTEGER"
+			"movement_speed_bonus"	"80"
+		}
+	}
+	
+	"Modifiers"
+	{
+	
+		"modifier_ghoul_frenzy"
+		{
+			"Passive"		"1"
+			"IsHidden"		"1"
+		
+			"Properties"
+			{
+				"MODIFIER_PROPERTY_MOVESPEED_BONUS_CONSTANT" 	"%movement_speed_bonus"
+				"MODIFIER_PROPERTY_BASE_ATTACK_TIME_CONSTANT"	"%base_attack_time"
+			}
+		}	
+	}
+}
+
+//=================================================================================
+// Ability: Web
+// Description: "Binds a target enemy air unit in webbing, forcing it to the ground. Webbed units can be hit as though they were land units. |nLasts <Aweb,Dur1> seconds."
+//=================================================================================
+"undead_web"
+{
+	"BaseClass"					"ability_datadriven"
+	"AbilityTextureName"		"undead_research_web"
+	"MaxLevel"					"1"
+		
+	"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_AUTOCAST"
+	"AbilityUnitTargetTeam"		"DOTA_UNIT_TARGET_TEAM_ENEMY"
+	"AbilityUnitTargetType"		"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+	"AbilityCastAnimation"		"ACT_DOTA_CAST_ABILITY_2"
+
+	"TargetsAllowed"			"air"
+		
+	"AbilityCastRange"			"400"
+	"AbilityCastPoint"			"0"
+	"AbilityCooldown"			"12"
+	"AbilityManaCost"			"0"
+		
+	"AbilitySpecial"
+	{
+		"01"
+		{
+			"var_type"			"FIELD_INTEGER"
+			"duration"			"12"
+		}
+	}
+
+	"precache"
+	{
+		//target particle
+		"particle" "particles/econ/courier/courier_trail_hw_2012/courier_trail_hw_2012_webs.vpcf"
+		
+		//caster projectile particle
+		"particle"	"particles/units/heroes/hero_broodmother/broodmother_spin_web_cast.vpcf"
+	}
+	
+	"OnSpellStart"
+	{
+		"RunScript"
+		{
+			"Target" "TARGET"
+			"ScriptFile" "units/undead/crypt_fiend.lua"
+			"Function"	"Web"
+		}
+
+		"RunScript"
+        {
+            "ScriptFile"    "mechanics/abilities.lua"
+            "Function"      "Interrupt"
+        }
+		
+		"FireEffect"
+        {
+            "EffectName" 			"particles/units/heroes/hero_broodmother/broodmother_spin_web_cast.vpcf"
+            "Target" 				"CASTER"
+            "EffectAttachType" 		"attach_hitloc"
+            "ControlPointEntities"
+            {
+                "CASTER" "attach_hitloc"
+                "TARGET" "attach_hitloc"
+            }
+        }
+	}
+
+	"Modifiers"
+	{
+		"modifier_web"
+		{
+			"IsDebuff"	 "1"
+			"EffectName"			"particles/econ/courier/courier_trail_hw_2012/courier_trail_hw_2012_webs.vpcf"
+			"EffectAttachType"		"follow_origin"
+
+			"OnCreated"
+			{
+			    "ApplyModifier"
+			    {
+			        "ModifierName"  "modifier_truesight"
+			        "Target"        "TARGET"
+			    }
+			}
+
+			"OnDestroy"
+			{
+			    "RunScript"
+			    {
+			        "ScriptFile"    "units/undead/crypt_fiend.lua"
+			        "Function"      "Web_Destroy"
+			    }
+
+			    "RemoveModifier"
+			    {
+			        "ModifierName"  "modifier_truesight"
+			        "Target"        "TARGET"
+			    }
+			}
+			
+			"States"
+			{
+				"MODIFIER_STATE_ROOTED" "MODIFIER_STATE_VALUE_ENABLED"	
+			}
+		}
+		
+		"modifier_web_autocast"
+		{
+			"IsHidden" "1"
+			"Passive" "1"
+			
+			"OnCreated"
+			{
+				"RunScript"
+				{
+					"ScriptFile" "mechanics/abilities.lua"
+					"Function"	"ToggleOnAutocast"
+				}
+			}
+
+			"ThinkInterval"  "1.0"
+			"OnIntervalThink"
+			{
+			    "RunScript"
+				{
+					"ScriptFile" "units/undead/crypt_fiend.lua"
+					"Function"	 "Web_AutoCast"
+				}
+			}
+		}
+	}
+}
+
+//=================================================================================
+// Ability: Burrow
+// Description: "The Crypt Fiend digs into the ground, becomes invisible, and gains a regeneration rate of <ucrm,regenHP> hit points per second. |nThe Crypt Fiend cannot attack while burrowed."
+//=================================================================================
+"undead_burrow"
+{
+	"BaseClass"					"ability_datadriven"
+	"AbilityTextureName"		"crypt_lord_beetle_burrow"
+	"MaxLevel"					"1"
+		
+	"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE"
+		
+	"AbilityCastPoint"			"0"
+	"AbilityCooldown"			"0"
+	"AbilityManaCost"			"0"
+	
+	"AbilityMultiOrder" 		"1"
+	
+	"AbilitySpecial"
+	{
+		"01"
+		{
+			"var_type"		"FIELD_INTEGER"
+			"regeneration"	"5"
+		}
+	}
+	
+	"precache"
+	{
+		// set models
+		"model"				"models/heroes/nerubian_assassin/mound.vmdl"
+		"model_folder"		"models/heroes/weaver"
+		
+		// burrow particles
+		"particle"	"particles/units/heroes/hero_nyx_assassin/nyx_assassin_burrow_exit.vpcf"
+		"particle"	"particles/units/heroes/hero_nyx_assassin/nyx_assassin_burrow.vpcf"
+	}
+	
+	"OnSpellStart"
+	{
+       	"RunScript"
+		{
+			"ScriptFile"	"units/undead/crypt_fiend.lua"
+			"Function"		"BurrowStart"
+		}
+	}
+	
+	"Modifiers"
+	{
+		"modifier_burrowing" //transition
+		{
+            "IsHidden"  "1"
+
+            "States"
+            {
+                "MODIFIER_STATE_STUNNED"        "MODIFIER_STATE_VALUE_ENABLED"
+            }
+
+            "OnDestroy"
+            {
+				"RunScript"
+				{
+					"ScriptFile"	"units/undead/crypt_fiend.lua"
+					"Function"		"Burrow"
+				}
+            }
+		}
+		
+		"modifier_crypt_fiend_burrow"
+		{
+			
+			"Properties"
+			{
+				"MODIFIER_PROPERTY_HEALTH_REGEN_CONSTANT"		"%regeneration"
+				"MODIFIER_PROPERTY_DISABLE_TURNING" 			"1"
+			}
+
+			"States"
+			{
+				"MODIFIER_STATE_INVISIBLE"			"MODIFIER_STATE_VALUE_ENABLED"
+				"MODIFIER_STATE_NO_UNIT_COLLISION"	"MODIFIER_STATE_VALUE_ENABLED"
+				"MODIFIER_STATE_ROOTED"				"MODIFIER_STATE_VALUE_ENABLED"
+				"MODIFIER_STATE_DISARMED"			"MODIFIER_STATE_VALUE_ENABLED"
+			}
+		}
+	}
+	
+}
+
+//=================================================================================
+// Ability: Stone Form
+// Description: "Transforms the Gargoyle into a statue that is immune to spells, gains additional armor and has a regeneration rate of <Astn,DataE1> hit points per second. |nThe Gargoyle cannot attack in this form."
+//=================================================================================
+"undead_stone_form"
+{
+	"BaseClass"					"ability_datadriven"
+	"AbilityTextureName"		"undead_research_stone_form"
+	"MaxLevel"					"1"
+		
+	"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE | DOTA_ABILITY_BEHAVIOR_DONT_RESUME_MOVEMENT | DOTA_ABILITY_BEHAVIOR_DONT_RESUME_ATTACK"
+		
+	"AbilityCastPoint"			"0"
+	"AbilityCooldown"			"0"
+	"AbilityManaCost"			"0"
+
+	"AbilityMultiOrder"			"1"
+	
+	"AbilitySpecial"
+	{
+		"01"
+		{
+			"var_type"			"FIELD_INTEGER"
+			"regeneration"		"8"
+		}
+		"02"
+		{
+			"var_type"			"FIELD_INTEGER"
+			"bonus_armor"		"12"		
+		}
+	}
+
+	"precache"
+	{
+	    "soundfile" "soundevents/game_sounds_heroes/game_sounds_visage.vsndevts"
+	}
+	
+	"OnSpellStart"
+	{
+		"RunScript"
+		{
+			"ScriptFile" 	"units/undead/gargoyle.lua"
+			"Function"		"StoneForm"
+		}
+	}
+
+	"Modifiers"
+	{
+		"modifier_stone_form_order"
+		{
+			"IsHidden"	"1"
+			"States"
+			{
+			    "MODIFIER_STATE_COMMAND_RESTRICTED"   "MODIFIER_STATE_VALUE_ENABLED"
+			}
+		}
+		"modifier_stone_form_transform"
+		{
+			"IsHidden"	"1"
+			"Duration"	"0.7"
+			"States"
+			{
+			    "MODIFIER_STATE_STUNNED"   "MODIFIER_STATE_VALUE_ENABLED"
+			}
+			"OnCreated"
+			{
+			    "RunScript"
+				{
+					"ScriptFile" 	"units/undead/gargoyle.lua"
+					"Function"		"StoneFormStart"
+				}
+			}
+			"OnDestroy"
+			{
+			    "ApplyModifier"
+			    {
+			        "ModifierName"  "modifier_stone_form"
+			        "Target"        "TARGET"
+			    }
+			}
+		}
+
+		"modifier_stone_form_transform_end"
+		{
+			"IsHidden"	"1"
+			"Duration"	"0.5"
+			"States"
+			{
+			    "MODIFIER_STATE_STUNNED"   "MODIFIER_STATE_VALUE_ENABLED"
+			}
+			"OnDestroy"
+			{
+			    "RunScript"
+				{
+					"ScriptFile" 	"units/undead/gargoyle.lua"
+					"Function"		"StoneFormEnd"
+				}
+			}
+		}
+
+		"modifier_stone_form"
+		{
+			"OnCreated"
+			{
+			    "FireSound"
+			    {
+			        "EffectName"    "Visage_Familar.StoneForm.Cast"
+			        "Target"        "TARGET"
+			    }
+			}
+
+			"StatusEffectName"      "particles/status_fx/status_effect_medusa_stone_gaze.vpcf"        
+			"StatusEffectPriority"  "5"
+
+			"States"
+			{
+				"MODIFIER_STATE_MAGIC_IMMUNE"		"MODIFIER_STATE_VALUE_ENABLED"
+				"MODIFIER_STATE_ROOTED"				"MODIFIER_STATE_VALUE_ENABLED"
+				"MODIFIER_STATE_DISARMED"			"MODIFIER_STATE_VALUE_ENABLED"
+			}
+			
+			"Properties"
+			{
+				"MODIFIER_PROPERTY_HEALTH_REGEN_CONSTANT"	"%regeneration"
+				"MODIFIER_PROPERTY_PHYSICAL_ARMOR_BONUS"	"%bonus_armor"
+				"MODIFIER_PROPERTY_DISABLE_AUTOATTACK"		"1"
+				"MODIFIER_PROPERTY_DISABLE_TURNING"			"1"
+			}
+		}
+	}
+	
+}
+
+//=================================================================================
+// Ability: Disease Cloud
+// Description: "Infects nearby enemy living units with Disease Cloud. Disease Cloud deals <Aap1,DataB1> damage per second. |nLasts <Aap1,DataA1> seconds."
+//=================================================================================
+"undead_disease_cloud"
+{
+	"BaseClass"					"ability_lua"
+	"ScriptFile"				"units/undead/abomination.lua"
+	"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_AOE | DOTA_ABILITY_BEHAVIOR_PASSIVE"
+	"AbilityUnitDamageType"		"DAMAGE_TYPE_MAGICAL"
+	"AbilityCastRange"			"%radius"
+	"MaxLevel"					"1"
+	"AbilityTextureName"		"pudge_rot"
+
+	"TargetsAllowed"            "ground,organic"
+
+	"AbilitySpecial"
+	{
+		"01"
+		{
+			"var_type"			"FIELD_INTEGER"
+			"radius"			"200"
+		}
+		"02"
+		{
+			"var_type"			"FIELD_FLOAT"
+			"damage_per_second"	"1"
+		}
+		"03"
+		{
+			"var_type"			"FIELD_FLOAT"
+			"debuff_duration"	"120"
+		}
+	}
+}
+
+//=================================================================================
+// Ability: Disease Cloud
+// Description: "Infects nearby enemy living units with Disease Cloud. Disease Cloud deals <Aap1,DataB1> damage per second. |nLasts <Aap1,DataA1> seconds."
+//=================================================================================
+"undead_meat_wagon_disease_cloud"
+{
+	"BaseClass"					"ability_datadriven"
+	"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+	"AbilityUnitDamageType"		"DAMAGE_TYPE_MAGICAL"
+	"MaxLevel"					"1"
+	"AbilityTextureName"		"pudge_rot"
+
+	"TargetsAllowed"            "ground,organic"
+
+	"AbilitySpecial"
+	{
+		"01"
+		{
+			"var_type"			"FIELD_INTEGER"
+			"duration"			"10"
+		}
+	}
+		
+	"Modifiers"
+	{	
+		"modifier_disease_orb"
+		{
+			"Passive"						"1"
+			"IsHidden"						"1"
+		
+			"OnCreated"
+			{
+			    "RunScript"
+				{
+					"ScriptFile"	"units/undead/meat_wagon.lua"
+					"Function"		"UnlockDiseaseCloud"
+				}
+			}
+		}
+	}
+}
+
+
+//=================================================================================
+// Ability: Get Corpse
+// Description: "Picks up a nearby corpse for later use."
+//=================================================================================
+"undead_get_corpse"
+{
+	"BaseClass"					"ability_datadriven"
+	"AbilityTextureName"		"undead_get_corpse"
+	"MaxLevel"					"1"
+		
+	"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_AUTOCAST"
+	"AbilityCastAnimation"		"ACT_DOTA_CAST_ABILITY_2"
+		
+	"AbilityCastRange"			"600" //Range from a corpse
+	"AbilityCastPoint"			"0"
+	"AbilityCooldown"			"0.5"
+	"AbilityManaCost"			"0"
+
+	"RequiresCorpsesAround"		"600"
+	"CorpseFlag"				"NotMeatWagon"
+
+	"AbilitySpecial"
+	{
+		"01"
+		{
+			"var_type"		"FIELD_INTEGER"
+			"search_radius"	"600"
+		}
+		"02"
+		{
+			"var_type"		"FIELD_INTEGER"
+			"max_corpses"	"8"
+		}
+	}
+	
+	"OnSpellStart"
+	{
+		"RunScript"
+		{
+			"ScriptFile"	"units/undead/meat_wagon.lua"
+			"Function"		"GetCorpse"			
+		}
+	}
+
+	"OnOwnerDied"
+	{
+		"RunScript"
+		{
+			"ScriptFile"	"units/undead/meat_wagon.lua"
+			"Function"		"DropAllCorpses"			
+		}
+	}
+	
+	"Modifiers"
+	{	
+		"modifier_corpses"
+		{
+			"Passive" 	"1"
+		}
+		
+		"modifier_get_corpse_autocast"
+		{
+			"Passive" "1"
+			"IsHidden" "1"
+					
+			"OnCreated"
+			{	
+				"RunScript"
+				{
+					"ScriptFile" 	"units/undead/meat_wagon.lua"
+					"Function"		"GetCorpse_Autocast"			
+				}	
+			}
+		}
+	}
+}
+
+//=================================================================================
+// Ability: Drop Corpse
+// Description: "Drops all corpses for immediate use."
+//=================================================================================
+"undead_drop_corpse"
+{
+	"BaseClass"					"ability_datadriven"
+	"AbilityTextureName"		"undead_drop_corpse"
+	"MaxLevel"					"1"
+		
+	"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
+	"AbilityCastAnimation"		"ACT_DOTA_CAST_ABILITY_2"
+		
+	"AbilityCastPoint"			"0"
+	"AbilityCooldown"			"0"
+	"AbilityManaCost"			"0"
+
+	"OnSpellStart"
+	{
+		"RunScript"
+		{
+			"ScriptFile" "units/undead/meat_wagon.lua"
+			"Function"	 "DropCorpse"
+		}
+	}
+	
+	"Modifiers"
+	{
+		"modifier_dropping_corpses"
+		{
+			"IsHidden" "1"
+			"OnOrder"
+			{
+				"RemoveModifier"
+				{
+					"ModifierName"	"modifier_dropping_corpses"
+					"Target" 		"CASTER"
+				}
+			}
+		}
+	}
+}
+
+//=================================================================================
+// Ability: Exhume Corpses
+// Description: "Gives Meat Wagons the ability to generate corpses."
+//=================================================================================
+"undead_exhume_corpses"
+{
+	"BaseClass"					"ability_datadriven"
+	"AbilityTextureName"		"undead_research_exhume_corpses"
+	"MaxLevel"					"1"
+		
+	"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+	
+	"AbilitySpecial"
+	{
+		"01"
+		{
+			"var_type"		"FIELD_INTEGER"
+			"interval"		"15"
+		}
+	}
+	
+	"Modifiers"
+	{
+		"modifier_exhume_corpse"
+		{
+			"Passive"	"1"
+			"IsHidden"	"1"
+			
+			"ThinkInterval" "%interval"
+			"OnIntervalThink"
+			{
+				"RunScript"
+				{
+					"ScriptFile" "units/undead/meat_wagon.lua"
+					"Function" "ExhumeCorpse"
+				}
+			}
+		}
+	}
+}
+
+//=================================================================================
+// Ability: Raise Dead
+// Description: "Raises <Arai,DataA1> skeletons from a corpse."
+//=================================================================================
+"undead_raise_dead"
+{
+	"BaseClass"					"ability_datadriven"
+	"AbilityTextureName"		"undead_raise_dead"
+	"MaxLevel"					"1"
+		
+	"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_AUTOCAST"
+	"AbilityCastAnimation"		"ACT_DOTA_CAST_ABILITY_1"
+		
+	"AbilityCastRange"			"900 900"
+	"AbilityCastPoint"			"0 0"
+	"AbilityCooldown"			"8 8"
+	"AbilityManaCost"			"75 75"
+
+	"RequiresCorpsesAround"		"900"
+		
+	"AbilitySpecial"
+	{
+		"01"
+		{
+			"var_type"		"FIELD_INTEGER"
+			"duration"		"40 40"
+		}
+		"02"
+		{
+			"var_type"		"FIELD_INTEGER"
+			"radius"		"900 900"
+		}
+		// It raises 2 melee skeletons at level one then 1 melee skeleton, 1 ranged skeleton at level two.
+		// Can be autocasted to automatically raise corpses in the 600 radius.
+	}
+	
+	"precache"
+	{
+		"model" "models/creeps/neutral_creeps/n_creep_troll_skeleton/n_creep_skeleton_melee.vmdl"
+		"model"	"models/items/wraith_king/regalia_of_the_bonelord_cape.vmdl"
+		"model"	"models/items/pugna/ashborn_horns/ashborn_horns.vmdl"
+		"model_folder" "models/heroes/pugna"	
+		
+		// particle precaches
+		"particle" "particles/neutral_fx/skeleton_spawn.vpcf"
+		"particle" "particles/units/heroes/hero_pugna/pugna_base_attack.vpcf"
+	}
+		
+	"OnSpellStart"
+	{
+		"RunScript"
+		{
+			"ScriptFile" 	"units/undead/necromancer.lua"
+			"Function"		"RaiseDead"
+		}
+	}
+	
+	"Modifiers"
+	{
+		"modifier_raise_dead_autocast"
+		{
+			"Passive" "1"
+			"IsHidden" "1"
+			
+			"ThinkInterval"  "1.0"
+			"OnIntervalThink"
+			{
+			    "RunScript"
+				{
+					"ScriptFile" 	"units/undead/necromancer.lua"
+					"Function"		"RaiseDead_AutoCast"
+				}
+			}
+		}	
+	}
+}
+
+//=================================================================================
+// Ability: Unholy Frenzy
+// Description: "Increases the attack rate of a target unit by <Suhf,DataA1,%>%, but drains <Suhf,DataB1> hit points per second. |nLasts <Suhf,Dur1> seconds."
+//=================================================================================
+"undead_unholy_frenzy"
+{
+	"BaseClass"					"ability_datadriven"
+	"AbilityTextureName"		"undead_unholy_frenzy"
+	"MaxLevel"					"1"
+		
+	"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+	"AbilityUnitTargetTeam"		"DOTA_UNIT_TARGET_TEAM_BOTH"
+	"AbilityUnitTargetType"		"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
+	"AbilityUnitDamageType"		"DAMAGE_TYPE_MAGICAL"
+	"AbilityCastAnimation"		"ACT_DOTA_CAST_ABILITY_1"
+
+	"TargetsAllowed"            "organic"
+		
+	"AbilityCastRange"			"500"
+	"AbilityCastPoint"			"0"
+	"AbilityCooldown"			"3"
+	"AbilityManaCost"			"50"
+		
+	"AbilitySpecial"
+	{
+		"01"
+		{
+			"var_type"		"FIELD_INTEGER"
+			"duration"		"45"
+		}
+		"02"
+		{
+			"var_type"		"FIELD_INTEGER"
+			"attack_speed_increase"			"75"
+		}
+		"03"
+		{
+			"var_type"		"FIELD_INTEGER"
+			"damage_per_second"				"4"
+		}
+	}
+	
+	"precache"
+	{
+		"soundfile" 	"sounds/items/mask_of_madness.vsnd"
+	}
+	
+	"OnSpellStart"
+	{		
+		"ApplyModifier"
+		{
+			"ModifierName" 	"modifier_unholy_frenzy"
+			"Target" 		"TARGET"
+			"Duration" 		"%duration"
+		}
+		"FireSound"
+		{
+			"EffectName"		"DOTA_Item.MaskOfMadness.Activate"
+			"Target"			"TARGET"
+		}	
+	}
+	
+	"Modifiers"
+	{
+		"modifier_unholy_frenzy"
+		{
+			"EffectName"		"particles/items_fx/armlet.vpcf"
+			"EffectAttachType"	"follow_origin"
+
+			"IsPurgable" "1"
+
+			"Properties"
+			{
+				"MODIFIER_PROPERTY_ATTACKSPEED_BONUS_CONSTANT" "%attack_speed_increase"
+			}
+			
+			"ThinkInterval" 	"1"
+			"OnIntervalThink"
+			{
+				"Damage"
+				{
+					"Target"	 "TARGET"
+					"Damage"	 "%damage_per_second"
+					"Type"		 "DAMAGE_TYPE_PURE"
+				}			
+			}
+		}
+	}
+}
+
+
+//=================================================================================
+// Ability: Cripple
+// Description: "Reduces movement speed by <Acri,DataA1,%>%, attack rate by <Acri,DataB1,%>%, and damage by <Acri,DataC1,%>% of a target enemy unit. |nLasts <Acri,Dur1> seconds."
+//=================================================================================
+"undead_cripple"
+{
+	"BaseClass"					"ability_datadriven"
+	"AbilityTextureName"		"undead_cripple"
+	"MaxLevel"					"1"
+		
+	"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+	"AbilityUnitTargetTeam"		"DOTA_UNIT_TARGET_TEAM_ENEMY"
+	"AbilityUnitTargetType"		"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
+	"AbilityCastAnimation"		"ACT_DOTA_CAST_ABILITY_4"
+
+	"TargetsAllowed"            "organic"
+		
+	"AbilityCastRange"			"600"
+	"AbilityCastPoint"			"0.3"
+	"AbilityCooldown"			"10"
+	"AbilityManaCost"			"175"
+		
+	"AbilitySpecial"
+	{
+		"01"
+		{
+			"var_type"		"FIELD_INTEGER"
+			"creep_duration"		"60"
+		}
+		"02"
+		{
+			"var_type"		"FIELD_INTEGER"
+			"hero_duration"		"10"
+		}
+		"03"
+		{
+			"var_type"		"FIELD_INTEGER"
+			"attack_speed_reduction"			"-50"
+		}
+		"04"
+		{
+			"var_type"		"FIELD_INTEGER"
+			"movement_speed_reduction"			"-75"
+		}
+		"05"
+		{
+			"var_type"		"FIELD_INTEGER"
+			"damage_reduction"					"-50"
+		}
+	}
+	
+	"precache"
+	{
+		"particle" "particles/units/heroes/hero_skeletonking/skeletonking_hellfireblast_debuff.vpcf"
+		"soundfile" "sounds/items/rod_of_atos.vsnd"
+	}
+	
+	"OnSpellStart"
+	{
+		"FireSound"
+		{
+			"EffectName"		"DOTA_Item.RodOfAtos.Activate"
+			"Target"			"TARGET"
+		}	
+		"ApplyModifier"
+		{
+			"ModifierName"	"modifier_cripple"
+			"Target"
+			{
+				"Center"	"TARGET"
+				"Teams"		"DOTA_UNIT_TARGET_TEAM_ENEMY"
+				"Types"		"DOTA_UNIT_TARGET_HERO"
+			}
+			"Duration"		"%hero_duration"
+		}
+		
+		"ApplyModifier"
+		{
+			"ModifierName"	"modifier_cripple"
+			"Target"
+			{
+				"Center"	"TARGET"
+				"Teams"		"DOTA_UNIT_TARGET_TEAM_ENEMY"
+				"Types"		"DOTA_UNIT_TARGET_BASIC"
+			}
+			"Duration"		"%creep_duration"
+		}
+	}
+
+	"Modifiers"
+	{
+		"modifier_cripple"
+		{
+			"IsPurgable" 		"1"
+			"IsDebuff"			"1"
+			
+			"EffectName"	 	"particles/units/heroes/hero_skeletonking/skeletonking_hellfireblast_debuff.vpcf"
+			"EffectAttachType" 	"follow_origin"
+			
+			"Properties"
+			{
+				"MODIFIER_PROPERTY_BASEDAMAGEOUTGOING_PERCENTAGE" 				"%damage_reduction"
+				"MODIFIER_PROPERTY_MOVESPEED_BONUS_PERCENTAGE" 				"%movement_speed_reduction"
+				"MODIFIER_PROPERTY_ATTACKSPEED_BONUS_CONSTANT_SECONDARY" 	"%attack_speed_reduction"		
+			}
+		}	
+	}
+}
+
+//=================================================================================
+// Ability: Skeletal Longevity
+// Description: "Increases the duration of raised Skeleton Warriors and Skeletal Mages by <Rusl,base1> seconds."
+//=================================================================================
+"undead_skeletal_longevity"
+{
+	"BaseClass"					"ability_datadriven"
+	"AbilityTextureName"		"undead_research_skeletal_longevity"
+	"MaxLevel"					"1"
+		
+	"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+
+	"AbilitySpecial"
+	{
+		"01"
+		{
+			"var_type"		"FIELD_INTEGER"
+			"bonus_duration" "15"
+		}
+	}
+
+	"Modifiers"
+	{
+		"modifier_skeletal_longevity"
+		{
+			"Passive"			"1"
+			"IsHidden"			"1"
+
+			"OnCreated"
+			{
+				"RunScript"
+				{
+					"ScriptFile"	"units/undead/undead_upgrades.lua"
+					"Function"		"SkeletalLongevity"
+				}
+			}
+		}
+	}
+}
+
+//=================================================================================
+// Ability: Skeletal Mastery
+// Description: "Causes one of the two skeletons created by Raise Dead to be a Skeletal Mage."
+//=================================================================================
+"undead_skeletal_mastery"
+{
+	"BaseClass"					"ability_datadriven"
+	"AbilityTextureName"		"undead_skeletal_mastery"
+	"MaxLevel"					"1"
+		
+	"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		
+	// This basically upgrade the previous Raise Dead spell to level two.
+	
+}
+
+//=================================================================================
+// Ability: Curse
+// Description: "Curses a target enemy unit, causing it to have a <Acrs,DataA1,%>% chance to miss on an attack. |nLasts <Acrs,Dur1> seconds."
+//=================================================================================
+"undead_curse"
+{
+	"BaseClass"					"ability_datadriven"
+	"AbilityTextureName"		"undead_curse"
+	"MaxLevel"					"1"
+		
+	"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_AUTOCAST"
+	"AbilityUnitTargetTeam"		"DOTA_UNIT_TARGET_TEAM_ENEMY"
+	"AbilityUnitTargetType"		"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
+	"AbilityCastAnimation"		"ACT_DOTA_CAST_ABILITY_1"
+
+	"TargetsAllowed"            "organic"
+		
+	"AbilityCastRange"			"700"
+	"AbilityCastPoint"			"0.1"
+	"AbilityCooldown"			"1"
+	"AbilityManaCost"			"40"
+		
+	"AbilitySpecial"
+	{
+		"01"
+		{
+			"var_type"		"FIELD_INTEGER"
+			"unit_duration"		"120"
+		}
+		"02"
+		{
+			"var_type"		"FIELD_INTEGER"
+			"hero_duration"		"60"
+		}
+		"03"
+		{
+			"var_type"		"FIELD_INTEGER"
+			"miss_chance"		"33"
+		}
+	}
+	
+	"precache"
+	{	
+		// target particle
+		"particle"  "particles/econ/items/templar_assassin/templar_assassin_focal/templar_meld_focal_overhead.vpcf"
+	}
+	
+	"OnSpellStart"
+	{			
+		"ApplyModifier"
+		{
+		    "ModifierName"  "modifier_undead_curse"
+		    "Target"
+		    {
+		        "Center"    "TARGET"
+		        "Teams"     "DOTA_UNIT_TARGET_TEAM_ENEMY"
+		        "Types"     "DOTA_UNIT_TARGET_HERO"
+		    }
+		    "Duration"      "%hero_duration"
+		}
+		
+		"ApplyModifier"
+		{
+		    "ModifierName"  "modifier_undead_curse"
+		    "Target"
+		    {
+		        "Center"    "TARGET"
+		        "Teams"     "DOTA_UNIT_TARGET_TEAM_ENEMY"
+		        "Types"     "DOTA_UNIT_TARGET_BASIC"
+		    }
+		    "Duration"      "%unit_duration"
+		}		
+	}
+
+	"Modifiers"
+	{
+		"modifier_undead_curse"
+		{
+			"EffectName" 		"particles/econ/items/templar_assassin/templar_assassin_focal/templar_meld_focal_overhead.vpcf"
+			"EffectAttachType" 	"follow_overhead"
+			"IsPurgable"      	"1"
+			"TextureName"		"undead_curse"
+			"IsDebuff"			"1"
+			
+			"Properties"
+			{
+				"MODIFIER_PROPERTY_MISS_PERCENTAGE" "%miss_chance"		
+			}	
+		}
+
+		"modifier_undead_curse_autocast"
+		{
+			"Passive"		"1"
+			"IsHidden"		"1"
+			
+			"OnCreated"
+			{
+				"RunScript"
+				{
+					"ScriptFile"	"mechanics/abilities.lua"
+					"Function"		"ToggleOnAutocast"
+				}
+			}
+
+			"ThinkInterval"  "1.0"
+			"OnIntervalThink"
+			{
+			    "RunScript"
+				{
+					"ScriptFile"	"units/undead/banshee.lua"
+					"Function"		"CurseAutocast"
+				}
+			}		
+		}		
+	}
+}
+
+//=================================================================================
+// Ability: Anti-magic Shell
+// Description: "Creates a barrier that stops <Aam2,DataC1> points of spell damage from affecting a target unit. |nLasts <Aam2,Dur1> seconds."
+//=================================================================================
+"undead_anti_magic_shell"
+{
+	"BaseClass"					"ability_datadriven"
+	"AbilityTextureName"		"undead_anti_magic_shell"
+	"MaxLevel"					"1"
+		
+	"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+	"AbilityUnitTargetTeam"		"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+	"AbilityUnitTargetType"		"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
+	"AbilityCastAnimation"		"ACT_DOTA_CAST_ABILITY_2"
+		
+	"AbilityCastRange"			"500"
+	"AbilityCastPoint"			"0"
+	"AbilityCooldown"			"0"
+	"AbilityManaCost"			"75"
+		
+	"AbilitySpecial"
+	{
+		"01"
+		{
+			"var_type"			"FIELD_INTEGER"
+			"duration"			"90"
+		}
+		"02"
+		{
+			"var_type"			"FIELD_INTEGER"
+			"spell_absorption"	"300"
+		}
+	}
+	
+	"precache"
+	{	
+		"particle"  "particles/units/heroes/hero_medusa/medusa_mana_shield_oldbase.vpcf"
+	}
+	
+	
+	"OnSpellStart"
+	{			
+		"RemoveModifier"
+		{
+			"ModifierName"	"modifier_anti_magic_shell"
+			"Target" 		"TARGET"
+		}	
+		"ApplyModifier"
+		{
+			"ModifierName"	"modifier_anti_magic_shell"
+			"Target"		 "TARGET"
+			"Duration"		"%duration"
+		}
+		"RunScript"
+		{
+			"Target"		"TARGET"
+			"ScriptFile"	"units/undead/banshee.lua"
+			"Function"		"ResetAntiMagicShell"
+		}
+	}
+
+	"Modifiers"
+	{
+		"modifier_anti_magic_shell"
+		{			
+			"EffectName" 		"particles/units/heroes/hero_medusa/medusa_mana_shield_oldbase.vpcf"
+			"EffectAttachType" 	"follow_origin"
+			"IsPurgable"       "1"
+		}
+	}
+}
+
+//=================================================================================
+// Ability: Possession
+// Description: "Stuns a target unit and the Banshee for <Aps2,Dur1> seconds, during which the Banshee takes extra damage from attacks. She then displaces the soul of the enemy, giving you permanent control of it, but destroying the caster's body. |nPossession cannot be used on flying units, Heroes, or creeps above level <Aps2,DataA1>."
+//=================================================================================
+"undead_possession"
+{
+	"BaseClass"					"ability_datadriven"
+	"AbilityTextureName"		"undead_possession"
+	"MaxLevel"					"1"
+		
+	"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_CHANNELLED"
+	"AbilityUnitTargetTeam"		"DOTA_UNIT_TARGET_TEAM_ENEMY"
+	"AbilityUnitTargetType"		"DOTA_UNIT_TARGET_BASIC"
+	"AbilityCastAnimation"		"ACT_DOTA_CAST_ABILITY_2"
+
+	"TargetsAllowed"            "ground,organic"
+	"MaxCreepLevel"				"5"
+	
+	"AbilityChannelTime" 		"4"
+	"AbilityCastRange"			"350"
+	"AbilityCastPoint"			"0.3"
+	"AbilityCooldown"			"0"
+	"AbilityManaCost"			"250"
+	
+	"AbilityCastAnimation"		"ACT_DOTA_CAST_ABILITY_2"
+	"AnimationPlaybackRate"  	"0.1"
+		
+	"precache"
+	{
+		"particle" 	"particles/units/heroes/hero_death_prophet/death_prophet_spirit_model.vpcf"
+		"particle"  "particles/units/heroes/hero_death_prophet/death_prophet_excorcism_attack_impact_death.vpcf"
+		"particle"  "particles/units/heroes/hero_death_prophet/death_prophet_spiritsiphon.vpcf"
+		"particle"  "particles/units/heroes/hero_bane/bane_fiends_grip.vpcf"
+	}
+	
+	"AbilitySpecial"
+	{
+		"01"
+		{
+			"var_type"								"FIELD_INTEGER"
+			"damage_increase_while_channeling"		"66"
+		}
+		"02"
+		{
+			"var_type"			"FIELD_INTEGER"
+			"channel_range"		"350"
+		}
+		"03"
+		{
+			"var_type"			"FIELD_INTEGER"
+			"duration"			"4"
+		}
+	}
+
+	"OnAbilityPhaseStart"
+	{
+		"RunScript"
+		{
+			"ScriptFile"			"units/undead/banshee.lua"
+			"Function"				"PossessionStart"
+		}	
+	}
+	
+	"OnChannelInterrupted"
+	{
+		"RemoveModifier"
+		{
+			"ModifierName"	"modifier_possession_target"
+			"Target"		 "TARGET"
+		}
+				
+		"RemoveModifier"
+		{
+			"ModifierName"	"modifier_possession_caster"
+			"Target"		 "CASTER"
+		}
+	}
+	
+	"OnChannelSucceeded"
+	{
+		"RunScript"
+		{
+			"ScriptFile"			"units/undead/banshee.lua"
+			"Function"				"PossessionEnd"
+		}
+	}
+	
+	"Modifiers"
+	{
+		"modifier_possession_target"
+		{			
+			"EffectName" 		"particles/units/heroes/hero_bane/bane_fiends_grip.vpcf"
+			"EffectAttachType" 	"follow_origin"
+			"OverrideAnimation" "ACT_DOTA_DISABLED"
+			"TextureName"       "undead_possession"
+			"IsDebuff"			 "1"
+				
+			"States"
+			{
+				"MODIFIER_STATE_STUNNED" 			"MODIFIER_STATE_VALUE_ENABLED"
+			}
+		}
+		
+		"modifier_possession_caster"
+		{			
+			"EffectName" 		"particles/units/heroes/hero_pugna/pugna_ward_orientedrunes.vpcf"
+			"EffectAttachType" 	"follow_origin"
+			
+			"Properties"
+			{
+				"MODIFIER_PROPERTY_INCOMING_DAMAGE_PERCENTAGE" "%damage_increase_while_channeling"
+			}
+			"States"
+			{
+				"MODIFIER_STATE_DISARMED" "MODIFIER_STATE_VALUE_ENABLED"
+			}
+		}	
+	}
+}
+
+//=================================================================================
+// Ability: Freezing Breath
+// Description: "When used on a building, temporarily stops all building activities. |nLasts <Afrz,Dur1> seconds."
+//=================================================================================
+"undead_freezing_breath"
+{
+	"BaseClass"					"ability_datadriven"
+	"AbilityTextureName"		"undead_research_freezing_breath"
+	"MaxLevel"					"1"
+		
+	"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+	"AbilityUnitTargetTeam"		"DOTA_UNIT_TARGET_TEAM_ENEMY"
+	"AbilityUnitTargetType"		"DOTA_UNIT_TARGET_BUILDING"
+	
+	"AbilitySpecial"
+	{
+		"01"
+		{
+			"var_type"		"FIELD_INTEGER"
+			"duration"		"5"
+		}
+		"02"
+		{
+			"var_type"		"FIELD_INTEGER"
+			"radius"		"100"
+		}
+		"03"
+		{
+			"var_type"		"FIELD_FLOAT"
+			"movement_speed_reduction"		"-25"
+		}
+	}
+	
+	"precache"
+	{
+		// unit freeze particles
+		"particle"		"particles/econ/courier/courier_roshan_frost/courier_roshan_frost_steam.vpcf"
+		"particle" 		"particles/status_fx/status_effect_frost_lich.vpcf"
+		
+		// building freeze particle
+		"particle"		"particles/units/heroes/hero_winter_wyvern/wyvern_cold_embrace_buff_model.vpcf"
+	}
+	
+	"Modifiers"
+	{
+		"modifier_freezing_breath_passive"
+		{
+			"Passive" 	"1"
+			"IsHidden" 	"1"
+
+			"OnCreated"
+			{
+			    "RunScript"
+			    {
+			        "ScriptFile"    "units/undead/frost_wyrm.lua"
+			        "Function"      "FreezingBreathUnlock"
+			    }
+			}
+		
+			"OnAttackLanded"
+			{
+				"RunScript"
+				{
+					"ScriptFile"	"units/undead/frost_wyrm.lua"
+					"Function"		"FreezingAttack"
+				}
+			}
+		}
+		
+		"modifier_frozen"
+		{
+			"IsDebuff" "1"
+			
+			"StatusEffectName"     "particles/status_fx/status_effect_frost_lich.vpcf"
+			"StatusEffectPriority" "10"
+			
+			"EffectName"			"particles/units/heroes/hero_winter_wyvern/wyvern_cold_embrace_buff_model.vpcf"
+			"EffectAttachType"		"follow_origin"
+
+			"States"
+			{
+				"MODIFIER_STATE_FROZEN"		"MODIFIER_STATE_VALUE_ENABLED"
+			}
+			
+			"OnCreated"
+			{
+				"RunScript"
+				{
+					"ScriptFile"	"units/undead/frost_wyrm.lua"
+					"Function"		"Freeze"
+				}
+			}
+
+			"OnDestroy"
+			{
+			    "RunScript"
+				{
+					"ScriptFile"	"units/undead/frost_wyrm.lua"
+					"Function"		"UnFreeze"
+				}
+			}
+		}
+	}
+}
+
+//=================================================================================
+// Ability: Frost Breath - HIDDEN
+// 10 second slow splash, innate of frost wyrms and other blue dragons
+//=================================================================================
+"undead_frost_breath"
+{
+	"BaseClass"					"ability_datadriven"
+	"AbilityTextureName"		"undead_frost_breath"
+	"MaxLevel"					"1"
+		
+	"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_PASSIVE | DOTA_ABILITY_BEHAVIOR_HIDDEN"
+	"AbilityUnitTargetTeam"		"DOTA_UNIT_TARGET_TEAM_ENEMY"
+	"AbilityUnitTargetType"		"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+	
+	"AbilitySpecial"
+	{
+		"01"
+		{
+			"var_type"			"FIELD_INTEGER"
+			"duration"			"10"
+		}
+		"02"
+		{
+			"var_type"			"FIELD_INTEGER"
+			"radius"			"100"
+		}
+		"03"
+		{
+			"var_type"			"FIELD_FLOAT"
+			"movement_speed_reduction"	"-25"
+		}
+	}
+
+	"precache"
+	{
+		// unit freeze particles
+		"particle"		"particles/econ/courier/courier_roshan_frost/courier_roshan_frost_steam.vpcf"
+		"particle" 		"particles/status_fx/status_effect_frost_lich.vpcf"
+	}
+	
+	"Modifiers"
+	{
+		"modifier_frost_breath_passive"
+		{
+			"Passive" "1"
+			"IsHidden" "1"
+		
+			"OnAttackLanded"
+			{
+				"ApplyModifier"
+				{
+					"ModifierName"	"modifier_freezing_attack"
+					"Duration" 		"%duration"
+					"Target"
+					{
+						"Center"  	"TARGET"
+						"Radius" 	"%radius"
+						"Teams" 	"DOTA_UNIT_TARGET_TEAM_ENEMY"
+						"Types" 	"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
+						"Flags"     "DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES"
+					}
+				}
+			}
+		}
+	
+		"modifier_freezing_attack"
+		{
+			"IsDebuff"		"1"
+			
+			"StatusEffectName"     "particles/status_fx/status_effect_frost_lich.vpcf"
+			"StatusEffectPriority" "10"
+			
+			"EffectName"			"particles/econ/courier/courier_roshan_frost/courier_roshan_frost_steam.vpcf"
+			"EffectAttachType"		"follow_origin"
+		
+			"Properties"
+			{
+				"MODIFIER_PROPERTY_MOVESPEED_BONUS_PERCENTAGE"		"%movement_speed_reduction" 
+			}
+		}
+	}
+	
+}
+
+//=================================================================================
+// Ability: True Sight
+// Description: "Reveals nearby invisible units."
+//=================================================================================
+"undead_true_sight"
+{
+	"BaseClass"					"ability_datadriven"
+	"AbilityTextureName"		"undead_true_sight"
+	"MaxLevel"					"1"
+		
+	"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		
+	"AbilityCastRange"			"900"
+	"AbilityCastPoint"			"0"
+	"AbilityCooldown"			"0"
+	"AbilityManaCost"			"0"
+	
+	"precache"
+	{
+		"particle" "particles/units/heroes/hero_bane/bane_slime_trail_b.vpcf"
+	}
+
+	"AbilitySpecial"
+	{
+	    "01"
+	    {
+	        "var_type"          "FIELD_INTEGER"
+	        "radius"            "900"
+	    }
+	}
+
+	"Modifiers"
+	{
+		"modifier_shade"
+		{
+			"Passive"	"1"
+			"IsHidden"	"1"
+			
+			"EffectName"			"particles/units/heroes/hero_bane/bane_slime_trail_b.vpcf"
+			"EffectAttachType"		"follow_origin"
+			"OnCreated"
+			{
+				"ApplyModifier"
+				{
+					"ModifierName"	"modifier_invisible"
+					"Target"		"CASTER"
+				}
+			    "ApplyModifier"
+			    {
+			        "ModifierName"  "modifier_true_sight_aura"
+			        "Target"        "TARGET"
+			    }
+			}	
+		}
+	}
+}
+
+//=================================================================================
+// Ability: Frost Attack
+// Description: "Adds a cold effect to this unit's attacks that slows enemy units' movement speed."
+//=================================================================================
+"undead_frost_attack"
+{
+	"BaseClass"					"ability_datadriven"
+	"AbilityTextureName"		"undead_frost_attack"
+	"MaxLevel"					"1"
+		
+	"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_PASSIVE | DOTA_ABILITY_BEHAVIOR_HIDDEN"
+	"AbilityUnitTargetTeam"		"DOTA_UNIT_TARGET_TEAM_ENEMY"
+	"AbilityUnitTargetType"		"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
+	
+	"AbilityCastRange"			"600"
+	"AbilityCastPoint"			"0"
+	"AbilityCooldown"			"0"
+	"AbilityManaCost"			"0"
+		
+	"AbilitySpecial"
+	{
+		"01"
+		{
+			"var_type"		"FIELD_INTEGER"
+			"duration"		"5"
+		}
+		"02"
+		{
+			"var_type"		"FIELD_FLOAT"
+			"movement_speed_reduction"		"-50"
+		}
+	}
+
+	"precache"
+	{
+		"particle"		"particles/econ/courier/courier_roshan_frost/courier_roshan_frost_steam.vpcf"
+		"particle" 		"particles/status_fx/status_effect_frost_lich.vpcf"
+	}
+	
+	"Modifiers"
+	{
+		"modifier_frost_attack_passive"
+		{
+			"Passive" 	"1"
+			"IsHidden" 	"1"
+		
+			"OnAttackLanded"
+			{
+				"ApplyModifier"
+				{
+					"ModifierName"	"modifier_frost_attack"
+					"Duration" 		"%duration"
+					"Target"
+					{
+					    "Center"    "TARGET"
+					    "Teams"     "DOTA_UNIT_TARGET_TEAM_ENEMY"
+					    "Types"     "DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+					    "Flags"     "DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES"
+					}
+				}
+			}
+		}
+	
+		"modifier_frost_attack"
+		{
+			"IsDebuff"		"1"
+			
+			"StatusEffectName"     "particles/status_fx/status_effect_frost_lich.vpcf"
+			"StatusEffectPriority" "10"
+			
+			"EffectName"			"particles/econ/courier/courier_roshan_frost/courier_roshan_frost_steam.vpcf"
+			"EffectAttachType"		"follow_origin"
+		
+			"Properties"
+			{
+				"MODIFIER_PROPERTY_MOVESPEED_BONUS_PERCENTAGE"		"%movement_speed_reduction" 
+			}
+		}
+	}
+	
+}
+
+//=================================================================================
+// Ability: Essence of Blight
+// Description: "Restores <Arpl,DataA1> hit points to nearby friendly units."
+//=================================================================================
+"undead_essence_of_blight"
+{
+	"BaseClass"					"ability_datadriven"
+	"AbilityTextureName"		"undead_replenish_health"
+	"MaxLevel"					"1"
+		
+	"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_AUTOCAST | DOTA_ABILITY_BEHAVIOR_NO_TARGET"
+	"AbilityUnitTargetTeam"		"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+	"AbilityUnitTargetType"		"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
+
+	"TargetsAllowed"            "organic"
+		
+	"AbilityCastRange"			"600"
+	"AbilityCastPoint"			"0" //1 second backswing
+	"AbilityCooldown"			"1"
+	"AbilityManaCost"			"10" //2 min used, 10 max
+	
+	"AbilitySpecial"
+	{
+		"01"
+		{
+			"var_type"				"FIELD_INTEGER"
+			"health_restore"		"10"
+		}
+		"02"
+		{
+			"var_type"				"FIELD_INTEGER"
+			"max_unit"				"6"
+		}
+	}
+	
+	"OnSpellStart"
+	{
+		"RunScript"
+		{
+			"ScriptFile"	"units/undead/obsidian_statue.lua"
+			"Function"		"Heal"
+		}	
+	}
+				
+	"Modifiers"
+	{
+		"modifier_essence_of_blight"
+		{
+			"OnCreated"
+			{
+			    "RunScript"
+			    {
+			        "ScriptFile"    "units/undead/obsidian_statue.lua"
+			        "Function"      "EssenceOfBlight"
+			    }
+			}
+		}
+		"modifier_essence_of_blight_autocast"
+		{
+			"Passive"		"1"
+			"IsHidden"		"1"
+			"ThinkInterval" "0.1"
+			"OnIntervalThink"
+			{
+				"RunScript"
+				{
+					"ScriptFile"	"units/undead/obsidian_statue.lua"
+					"Function"		"HealAutocast"
+				}
+			}
+		}		
+	}
+}
+
+//=================================================================================
+// Ability: Spirit Touch
+// Description: "Restores <Arpm,DataB1> mana to nearby friendly units."
+//=================================================================================
+"undead_spirit_touch"
+{
+	"BaseClass"					"ability_datadriven"
+	"AbilityTextureName"		"undead_replenish_mana"
+	"MaxLevel"					"1"
+		
+	"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_AUTOCAST | DOTA_ABILITY_BEHAVIOR_NO_TARGET"
+	"AbilityUnitTargetTeam"		"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+	"AbilityUnitTargetType"		"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
+
+	"TargetsAllowed"            "organic"
+		
+	"AbilityCastRange"			"600"
+	"AbilityCastPoint"			"0"
+	"AbilityCooldown"			"1"
+	"AbilityManaCost"			"10"
+		
+	"AbilitySpecial"
+	{
+		"01"
+		{
+			"var_type"			"FIELD_INTEGER"
+			"mana_restore"		"3"
+		}
+		"02"
+		{
+			"var_type"			"FIELD_INTEGER"
+			"max_unit"			"6"
+		}
+	}
+	
+	"precache"
+	{
+		"particle" 	"particles/units/heroes/hero_medusa/medusa_mana_shield_shatter.vpcf"
+		"particle"	"particles/units/heroes/hero_obsidian_destroyer/obsidian_destroyer_essence_effect.vpcf"
+		"particle" 	"particles/items_fx/healing_clarity.vpcf"
+	}
+	
+	"OnSpellStart"
+	{
+		"RunScript"
+		{
+			"ScriptFile"			"units/undead/obsidian_statue.lua"
+			"Function"				"Mana"
+		}
+	}
+			
+	"Modifiers"
+	{
+		"modifier_spirit_touch"
+		{
+			"OnCreated"
+			{
+			    "RunScript"
+			    {
+			        "ScriptFile"    "units/undead/obsidian_statue.lua"
+			        "Function"      "SpiritTouch"
+			    }
+			}
+		}
+		"modifier_spirit_touch_autocast"
+		{
+			"Passive"		"1"
+			"IsHidden"		"1"
+			"ThinkInterval" "0.1"
+			"OnIntervalThink"
+			{
+				"RunScript"
+				{
+					"ScriptFile"	"units/undead/obsidian_statue.lua"
+					"Function"		"ManaAutocast"
+				}
+			}
+		}
+	}
+}
+
+//=================================================================================
+// Ability: Destroyer Form
+//=================================================================================
+"undead_destroyer_form"
+{
+	"BaseClass"					"ability_datadriven"
+	"AbilityTextureName"		"undead_research_destroyer_form"
+	"MaxLevel"					"1"
+		
+	"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
+	"AbilityUnitTargetTeam"		"DOTA_UNIT_TARGET_TEAM_ENEMY"
+	"AbilityUnitTargetType"		"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+	"AbilityUnitDamageType"		"DAMAGE_TYPE_MAGICAL"
+		
+	"AbilityCastPoint"			"0"
+	"AbilityCooldown"			"0"
+	"AbilityManaCost"			"0"
+	"AbilityMultiOrder"			"1"
+	
+	"precache"
+	{
+		"model_folder" "models/heroes/obsidian_destroyer"
+		"particle" 		"particles/siege_fx/siege_bad_death_01.vpcf"
+		
+		// destroyer projectile
+		"particle"		"particles/units/heroes/hero_bane/bane_projectile.vpcf"
+	}
+	
+	"OnSpellStart"
+	{
+		"ApplyModifier"
+		{
+			"Target"		"CASTER"
+			"ModifierName" 	"modifier_destroyer_morph"
+
+		}
+	}
+	
+	"Modifiers"
+	{
+		"modifier_destroyer_morph"
+		{
+			"IsHidden"		"1"
+			"Duration"		"1.1"
+						
+			"States"
+			{
+				"MODIFIER_STATE_STUNNED" "MODIFIER_STATE_VALUE_ENABLED"		
+			}
+			
+			"OnCreated"
+			{
+				"RunScript"
+				{
+					"ScriptFile" 	"units/undead/obsidian_statue.lua"
+					"Function" 		"DestroyerMorph"		
+				}
+			}						
+		}	
+	}
+}
+
+//=================================================================================
+// Ability: Absorb Mana
+// Description: "Takes all mana from one of your units and gives it to the Destroyer."
+//=================================================================================
+"undead_absorb_mana"
+{
+	"BaseClass"					"ability_datadriven"
+	"AbilityTextureName"		"undead_absorb_mana"
+	"MaxLevel"					"1"
+		
+	"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+	"AbilityUnitTargetTeam"		"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+	"AbilityUnitTargetType"		"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+	"AbilityUnitTargetFlags"    "DOTA_UNIT_TARGET_FLAG_NOT_MAGIC_IMMUNE_ALLIES"
+	"AbilityCastAnimation"		"ACT_DOTA_CAST_ABILITY_2"
+
+	"CastFilterRejectCaster"    "1"
+
+	"RequiresTargetMana"        "1"
+	"RequiresManaDeficit"      	"self"
+		
+	"AbilityCastRange"			"900"
+	"AbilityCastPoint"			"0"
+	"AbilityCooldown"			"0"
+	"AbilityManaCost"			"0"
+		
+	"precache"
+	{
+		"particle" 	"particles/units/heroes/hero_ancient_apparition/ancient_apparition_base_attack.vpcf"
+		"soundfile" "sounds/weapons/hero/terrorblade/sunder_target.vsnd"
+	}
+	
+	"OnSpellStart"
+	{
+		"RunScript"
+		{
+			"ScriptFile"		"units/undead/destroyer.lua"
+			"Function"			"AbsorbMana"
+		}
+		"FireSound"
+		{
+			"EffectName"		"Hero_Terrorblade.Sunder.Target"
+			"Target"			"TARGET"
+		}
+	}
+}
+
+//=================================================================================
+// Ability: Devour Magic
+// Description: "Consumes all magical buffs from units in an area. Each unit that is devoured of magic gives the Destroyer <Advm,DataA1> hit points and <Advm,DataB1> mana. |n|cffffcc00Deals <Advm,DataE1> damage to summoned units.|r"
+//=================================================================================
+"undead_devour_magic"
+{
+	"BaseClass"					"ability_datadriven"
+	"AbilityTextureName"		"undead_devour_magic"
+	"MaxLevel"					"1"
+		
+	"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_AOE"
+	"AbilityUnitTargetTeam"		"DOTA_UNIT_TARGET_TEAM_BOTH"
+	"AbilityUnitTargetType"		"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO"
+	"AbilityUnitDamageType"		"DAMAGE_TYPE_MAGICAL"
+	"AbilityCastAnimation"		"ACT_DOTA_CAST_ABILITY_2"
+		
+	"AbilityCastRange"			"600"
+	"AbilityCastPoint"			"0"
+	"AbilityCooldown"			"7"
+	"AbilityManaCost"			"0"
+		
+	"AOERadius"					"200"
+	"AbilitySpecial"
+	{
+		"01"
+		{
+			"var_type"			"FIELD_INTEGER"
+			"radius"			"200"
+		}
+		"02"
+		{
+			"var_type"			"FIELD_INTEGER"
+			"health_restore"	"50"
+		}
+		"03"
+		{
+			"var_type"			"FIELD_INTEGER"
+			"mana_restore"		"75"
+		}
+		// The restoration is per UNIT AFFECTED, not per BUFF DEVOURED.
+		"04"
+		{
+			"var_type"		"FIELD_INTEGER"
+			"summoned_unit_damage"			"180"
+		}
+		// This IGNORES friendly buffs.
+	}
+	
+	"precache"
+	{
+		// target particle
+		"particle" "particles/generic_gameplay/generic_purge.vpcf"
+	
+		// caster particle
+		"particle" "particles/econ/items/antimage/antimage_weapon_basher_ti5/antimage_manavoid_ti_5.vpcf"
+		
+		// point particle
+		"particle" "particles/units/heroes/hero_dark_seer/dark_seer_vacuum_shockwave.vpcf"
+		
+		"soundfile" "soundevents/game_sounds_heroes/game_sounds_anti_mage.vsndevts"
+	}
+	
+	"OnSpellStart"
+	{
+		"RunScript"
+		{
+			"ScriptFile" 	"units/undead/destroyer.lua"
+			"Function" 		"DevourMagic"
+			"Target" 		"POINT"
+		}
+	}
+}
+
+//=================================================================================
+// Ability: Orb of Annihilation
+// Description: "Adds <Afak,DataA1> bonus damage to the Destroyer's attack and causes his attacks to do area of effect damage."
+//=================================================================================
+"undead_orb_of_annihilation"
+{
+	"BaseClass"					"ability_datadriven"
+	"AbilityTextureName"		"undead_orb_of_annihilation"
+	"MaxLevel"					"1"
+		
+	"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_AUTOCAST"
+	"AbilityUnitTargetTeam"		"DOTA_UNIT_TARGET_TEAM_ENEMY"
+	"AbilityUnitTargetType"		"DOTA_UNIT_TARGET_BASIC | DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BUILDING"
+	"AbilityUnitDamageType"		"DAMAGE_TYPE_MAGICAL"
+	"AbilityUnitTargetFlags"	"DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES" //Must be able to cast on buildings, but not on other magic immune units
+		
+	"AbilityCastRange"			"450"
+	"AbilityCastPoint"			"0"
+	"AbilityCooldown"			"0"
+	"AbilityManaCost"			"25"
+	
+	"AOERadius"					"150"
+	"AbilitySpecial"
+	{
+		"01"
+		{
+			"var_type"			"FIELD_INTEGER"
+			"radius"			"150"
+		}
+		"02"
+		{
+			"var_type"			"FIELD_INTEGER"
+			"damage_bonus"		"20"
+		}
+	}
+
+	"precache"
+	{		
+		// orb projectile
+		"particle" "particles/units/heroes/hero_obsidian_destroyer/obsidian_destroyer_arcane_orb.vpcf"
+		"soundfile" "soundevents/game_sounds_heroes/game_sounds_obsidian_destroyer.vsndevts"
+	}
+
+	"OnSpellStart"
+	{
+	    "RunScript"
+	    {
+	        "ScriptFile"    "units/undead/destroyer.lua"
+	        "Function"      "OrbManualCast"
+	    }
+	}
+
+	"Modifiers"
+	{
+		"modifier_magic_orb"
+		{
+			"Passive"		"1"
+			"IsHidden"	 	"1"
+
+			"OnCreated"
+			{
+			    "RunScript"
+			    {
+			        "ScriptFile"    "mechanics/abilities.lua"
+			        "Function"      "ToggleOnAutocast"
+			    }
+			}
+
+			"OnAttackStart"
+			{
+			    "RunScript"
+			    {
+			        "ScriptFile"    "units/undead/destroyer.lua"
+			        "Function"      "OrbStart"
+			    }
+			}
+
+			"OnAttack"
+			{
+			    "RunScript"
+			    {
+			        "ScriptFile"    "units/undead/destroyer.lua"
+			        "Function"      "OrbFire"
+			    }
+			}
+
+			"OnAttackLanded"
+			{
+			    "RunScript"
+				{
+				    "ScriptFile"    "units/undead/destroyer.lua"
+				    "Function"      "OrbDamage"
+				}
+			}
+		}
+	}
+}
+
+//=================================================================================
+// Ability: Unsummon Building
+// Description: "Unsummons your building to regain <Auns,DataA1,%>% of the spent resources."
+// The Acolyte casts it on a building and that building gets its health reduced slowly over time until it's destroyed and the resources are received.
+//=================================================================================
+"undead_unsummon_building"
+{
+	"BaseClass"					"ability_datadriven"
+	"AbilityTextureName"		"undead_unsummon_building"
+	"MaxLevel"					"1"
+		
+	"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+	"AbilityUnitTargetTeam"		"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+	"AbilityUnitTargetType"		"DOTA_UNIT_TARGET_ALL"
+		
+	"AbilityCastPoint"			"0"
+	"AbilityCooldown"			"0"
+	"AbilityManaCost"			"0"
+	"AbilityCastRange"			"300"
+		
+	"AbilitySpecial"
+	{
+		"01"
+		{
+			"var_type"			"FIELD_FLOAT"
+			"accumulation_step"	"50"
+		}
+		// The amount of resources you're supposed to regain has to be equal to or larger than 50 in order for you to regain it.
+		"02"
+		{
+			"var_type"			"FIELD_INTEGER"
+			"salvage_cost_ratio" "0.5"
+		}
+	}
+
+	"precache"
+	{		
+		"particle" "particles/base_destruction_fx/gbm_lvl3_glow.vpcf"
+	}
+	
+	"OnSpellStart"
+	{
+		"RunScript"
+		{
+			"ScriptFile" 	"units/undead/acolyte.lua"
+			"Function"		"unsummon"	
+		}
+	}
+}
+
+
+//=================================================================================
+// Ability: Sacrifice
+// Description: "Target an Acolyte to sacrifice it and turn it into a Shade. Shades are invisible spirits that can see invisible units. |nShades cannot attack."
+//=================================================================================
+"undead_train_shade"
+{
+	"BaseClass"					"ability_datadriven"
+	"AbilityTextureName"		"undead_sacrifice"
+	"MaxLevel"					"1"
+		
+	"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_IMMEDIATE | DOTA_ABILITY_BEHAVIOR_IGNORE_CHANNEL | DOTA_ABILITY_BEHAVIOR_IGNORE_PSEUDO_QUEUE"
+	"AbilityUnitTargetTeam"		"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+	"AbilityUnitTargetType"		"DOTA_UNIT_TARGET_BASIC"
+		
+	"AbilityCastRange"			"0"
+	"AbilityCastPoint"			"0"
+	"AbilityCooldown"			"0"
+	"AbilityManaCost"			"0"
+	"AbilityChannelTime"		"15"
+	
+	"OnSpellStart"
+	{
+		"RunScript"
+		{
+			"ScriptFile"	"units/undead/acolyte.lua"
+			"Function"		"Sacrifice"
+		}
+	}
+
+	"OnChannelSucceeded"
+	{
+	    "RunScript"
+	    {
+	        "ScriptFile"    "units/undead/acolyte.lua"
+	        "Function"      "CreateShade"
+	    }
+	}
+	
+	"Modifiers"
+	{
+		"modifier_sacrificing"
+		{
+			"IsHidden"		"1"			
+			"OnOrder"
+			{
+				"RunScript"
+				{
+					"ScriptFile"	"units/undead/acolyte.lua"
+					"Function"		"StopSacrifice"
+				}
+			}
+		}	
+	}
+}
+
+//=================================================================================
+// Ability: Sacrifice
+// Description: "Target a Sacrificial Pit to sacrifice the Acolyte and turn it into a Shade. Shades are invisible spirits that can see invisible units. |nShades cannot attack."
+//=================================================================================
+"undead_sacrifice_acolyte"
+{
+	"BaseClass"					"ability_datadriven"
+	"AbilityTextureName"		"undead_sacrifice"
+	"MaxLevel"					"1"
+		
+	"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+	"AbilityUnitTargetTeam"		"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+	"AbilityUnitTargetType"		"DOTA_UNIT_TARGET_BASIC"
+		
+	"AbilityCastRange"			"0"
+	"AbilityCastPoint"			"0"
+	"AbilityCooldown"			"0"
+	"AbilityManaCost"			"0"
+		
+	// The unit will walk towards the targeted Sacrificial Pit and the Shade creation begins.
+}
+
+
+"undead_graveyard_create_corpses"
+{
+	"BaseClass"                 "ability_datadriven"
+	"MaxLevel"                  "1"
+	"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_PASSIVE | DOTA_ABILITY_BEHAVIOR_HIDDEN"
+
+	"Modifiers"
+	{
+	    "modifier_graveyard_create_corpses"
+	    {
+	        "Passive"           "1"
+	        "IsHidden"          "1"
+			"ThinkInterval"  	"15"
+			"OnIntervalThink"
+			{
+			    "RunScript"
+			    {
+			        "ScriptFile"    "units/undead/graveyard.lua"
+			        "Function"      "ExhumeCorpse"
+			    }
+			}
+	    }
+	}
+}

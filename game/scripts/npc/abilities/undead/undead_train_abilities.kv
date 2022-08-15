@@ -1,0 +1,989 @@
+"DOTAAbilities"
+{
+    "undead_train_acolyte"
+    {
+        "BaseClass"             		"ability_lua"
+        "ScriptFile"                    "abilities/undead/undead_train/undead_train_acolyte.lua"
+
+        "AbilityTextureName"			"undead_train_acolyte"
+        "MaxLevel" 						"1"
+
+        "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
+
+        // "AbilityGoldCost"				"75" // From "GoldCost"
+        "AbilityChannelTime"			"%train_time" // From "BuildTime"
+
+        "AbilityMultiOrder"				"1"
+        
+        "AbilitySpecial"
+        {
+            "01"
+            {
+                "var_type"				"FIELD_FLOAT"
+                "train_time"			"1.0" 
+            }
+            "02"
+            {
+                "var_type"				"FIELD_INTEGER"
+                "gold_cost"				"75"
+            }
+            "03"
+            {
+                "var_type"				"FIELD_INTEGER"
+                "lumber_cost"			"0"
+            }
+            "04"
+            {
+                "var_type"				"FIELD_INTEGER"
+                "food_cost"				"1"
+            }
+        }
+
+        // "OnChannelSucceeded"
+        // {
+        //     // Consume the first item in the queue
+        //     "RunScript"
+        //     {
+        //         "ScriptFile"   	"buildings/queue.lua"
+        //         "Function"      "NextQueue"
+        //     }
+
+        //     "SpawnUnit"
+        //     {
+        //         "UnitName"		"undead_acolyte"
+        //         "Target"
+        //         {
+        //             "Center"		    "CASTER"
+        //             "ScriptSelectPoints"
+        //             {
+        //                 "ScriptFile"    "buildings/rally_point.lua"
+        //                 "Function"      "GetInitialRallyPoint"
+        //                 "Target"		"CASTER"
+        //                 "Count"			"1"
+        //             }
+        //         }
+        //         "UnitCount"		"1"
+        //         "UnitLimit"		"0"
+        //         "GrantsGold"	"1"
+        //         "GrantsXP"		"1"
+        //         "SpawnRadius"	"10"
+        //         "OnSpawn"
+        //         {
+        //             "ApplyModifier"
+        //             {
+        //                 "ModifierName"	"modifier_phased"
+        //                 "Target"		"TARGET"
+        //                 "Duration"		"0.03"
+        //             }
+
+        //             "RunScript"
+        //             {
+        //                 "ScriptFile"    "buildings/rally_point.lua"
+        //                 "Function"      "MoveToRallyPoint"
+        //             }
+        //         }
+        //     }
+        // }
+    }
+
+    // "undead_train_ghoul"
+    // {
+    //     "BaseClass"             		"ability_datadriven"
+    //     "AbilityTextureName"			"undead_train_ghoul"
+    //     "MaxLevel" 						"1"
+
+    //     "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_AUTOCAST | DOTA_ABILITY_BEHAVIOR_IMMEDIATE | DOTA_ABILITY_BEHAVIOR_IGNORE_CHANNEL | DOTA_ABILITY_BEHAVIOR_IGNORE_PSEUDO_QUEUE"
+
+    //     // "AbilityGoldCost"				"120" // From "GoldCost"
+    //     "AbilityChannelTime"			"%train_time" // From "BuildTime"
+
+    //     "AbilityMultiOrder"				"1"
+        
+    //     "AbilitySpecial"
+    //     {
+    //         "01"
+    //         {
+    //             "var_type"				"FIELD_FLOAT"
+    //             "train_time"			"18.0" 
+    //         }
+    //         "02"
+    //         {
+    //             "var_type"				"FIELD_INTEGER"
+    //             "gold_cost"				"120"
+    //         }
+    //         "03"
+    //         {
+    //             "var_type"				"FIELD_INTEGER"
+    //             "lumber_cost"			"0"
+    //         }
+    //         "04"
+    //         {
+    //             "var_type"				"FIELD_INTEGER"
+    //             "food_cost"				"2"
+    //         }
+    //     }
+
+    //     "OnSpellStart"
+    //     {
+    //         "RunScript"
+    //         {
+    //             "ScriptFile"	"buildings/queue.lua"
+    //             "Function"		"EnqueueUnit"
+    //         }
+    //     }
+
+    //     "OnChannelSucceeded"
+    //     {
+    //         // Consume the first item in the queue
+    //         "RunScript"
+    //         {
+    //             "ScriptFile"   	"buildings/queue.lua"
+    //             "Function"      "NextQueue"
+    //         }
+
+    //         "SpawnUnit"
+    //         {
+    //             "UnitName"		"undead_ghoul"
+    //             "Target"
+    //             {
+    //                 "Center"		    "CASTER"
+    //                 "ScriptSelectPoints"
+    //                 {
+    //                     "ScriptFile"    "buildings/rally_point.lua"
+    //                     "Function"      "GetInitialRallyPoint"
+    //                     "Target"		"CASTER"
+    //                     "Count"			"1"
+    //                 }
+    //             }
+    //             "UnitCount"		"1"
+    //             "UnitLimit"		"0"
+    //             "GrantsGold"	"1"
+    //             "GrantsXP"		"1"
+    //             "SpawnRadius"	"10"
+    //             "OnSpawn"
+    //             {
+    //                 "ApplyModifier"
+    //                 {
+    //                     "ModifierName"	"modifier_phased"
+    //                     "Target"		"TARGET"
+    //                     "Duration"		"0.03"
+    //                 }
+
+    //                 "RunScript"
+    //                 {
+    //                     "ScriptFile"    "buildings/rally_point.lua"
+    //                     "Function"      "MoveToRallyPoint"
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+
+    // "undead_train_crypt_fiend"
+    // {
+    //     "BaseClass"             		"ability_datadriven"
+    //     "AbilityTextureName"			"undead_train_crypt_fiend"
+    //     "MaxLevel" 						"1"
+
+    //     "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_AUTOCAST | DOTA_ABILITY_BEHAVIOR_IMMEDIATE | DOTA_ABILITY_BEHAVIOR_IGNORE_CHANNEL | DOTA_ABILITY_BEHAVIOR_IGNORE_PSEUDO_QUEUE"
+
+    //     // "AbilityGoldCost"				"215" // From "GoldCost"
+    //     "AbilityChannelTime"			"%train_time" // From "BuildTime"
+
+    //     "AbilityMultiOrder"				"1"
+        
+    //     "AbilitySpecial"
+    //     {
+    //         "01"
+    //         {
+    //             "var_type"				"FIELD_FLOAT"
+    //             "train_time"			"30.0" 
+    //         }
+    //         "02"
+    //         {
+    //             "var_type"				"FIELD_INTEGER"
+    //             "gold_cost"				"215"
+    //         }
+    //         "03"
+    //         {
+    //             "var_type"				"FIELD_INTEGER"
+    //             "lumber_cost"			"40"
+    //         }
+    //         "04"
+    //         {
+    //             "var_type"				"FIELD_INTEGER"
+    //             "food_cost"				"3"
+    //         }
+    //     }
+
+    //     "OnSpellStart"
+    //     {
+    //         "RunScript"
+    //         {
+    //             "ScriptFile"	"buildings/queue.lua"
+    //             "Function"		"EnqueueUnit"
+    //         }
+    //     }
+
+    //     "OnChannelSucceeded"
+    //     {
+    //         // Consume the first item in the queue
+    //         "RunScript"
+    //         {
+    //             "ScriptFile"   	"buildings/queue.lua"
+    //             "Function"      "NextQueue"
+    //         }
+
+    //         "SpawnUnit"
+    //         {
+    //             "UnitName"		"undead_crypt_fiend"
+    //             "Target"
+    //             {
+    //                 "Center"		    "CASTER"
+    //                 "ScriptSelectPoints"
+    //                 {
+    //                     "ScriptFile"    "buildings/rally_point.lua"
+    //                     "Function"      "GetInitialRallyPoint"
+    //                     "Target"		"CASTER"
+    //                     "Count"			"1"
+    //                 }
+    //             }
+    //             "UnitCount"		"1"
+    //             "UnitLimit"		"0"
+    //             "GrantsGold"	"1"
+    //             "GrantsXP"		"1"
+    //             "SpawnRadius"	"10"
+    //             "OnSpawn"
+    //             {
+    //                 "ApplyModifier"
+    //                 {
+    //                     "ModifierName"	"modifier_phased"
+    //                     "Target"		"TARGET"
+    //                     "Duration"		"0.03"
+    //                 }
+
+    //                 "RunScript"
+    //                 {
+    //                     "ScriptFile"    "buildings/rally_point.lua"
+    //                     "Function"      "MoveToRallyPoint"
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+
+    // "undead_train_crypt_fiend_disabled"
+    // {
+    //     "BaseClass"             		"ability_datadriven"
+    //     "AbilityTextureName"			"undead_train_crypt_fiend"
+    //     "MaxLevel" 						"0"
+
+    //     "OnUpgrade"
+    //     {
+    //         "RunScript"
+    //         {
+    //             "ScriptFile"	"buildings/upgrades.lua"
+    //             "Function"		"SetLevel0"
+    //         }
+    //     }
+    // }
+
+    // "undead_train_gargoyle"
+    // {
+    //     "BaseClass"             		"ability_datadriven"
+    //     "AbilityTextureName"			"undead_train_gargoyle"
+    //     "MaxLevel" 						"1"
+
+    //     "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_AUTOCAST | DOTA_ABILITY_BEHAVIOR_IMMEDIATE | DOTA_ABILITY_BEHAVIOR_IGNORE_CHANNEL | DOTA_ABILITY_BEHAVIOR_IGNORE_PSEUDO_QUEUE"
+
+    //     // "AbilityGoldCost"				"185" // From "GoldCost"
+    //     "AbilityChannelTime"			"%train_time" // From "BuildTime"
+
+    //     "AbilityMultiOrder"				"1"
+        
+    //     "AbilitySpecial"
+    //     {
+    //         "01"
+    //         {
+    //             "var_type"				"FIELD_FLOAT"
+    //             "train_time"			"35.0" 
+    //         }
+    //         "02"
+    //         {
+    //             "var_type"				"FIELD_INTEGER"
+    //             "gold_cost"				"185"
+    //         }
+    //         "03"
+    //         {
+    //             "var_type"				"FIELD_INTEGER"
+    //             "lumber_cost"			"20"
+    //         }
+    //         "04"
+    //         {
+    //             "var_type"				"FIELD_INTEGER"
+    //             "food_cost"				"2"
+    //         }
+    //     }
+
+    //     "OnSpellStart"
+    //     {
+    //         "RunScript"
+    //         {
+    //             "ScriptFile"	"buildings/queue.lua"
+    //             "Function"		"EnqueueUnit"
+    //         }
+    //     }
+
+    //     "OnChannelSucceeded"
+    //     {
+    //         // Consume the first item in the queue
+    //         "RunScript"
+    //         {
+    //             "ScriptFile"   	"buildings/queue.lua"
+    //             "Function"      "NextQueue"
+    //         }
+
+    //         "SpawnUnit"
+    //         {
+    //             "UnitName"		"undead_gargoyle"
+    //             "Target"
+    //             {
+    //                 "Center"		    "CASTER"
+    //                 "ScriptSelectPoints"
+    //                 {
+    //                     "ScriptFile"    "buildings/rally_point.lua"
+    //                     "Function"      "GetInitialRallyPoint"
+    //                     "Target"		"CASTER"
+    //                     "Count"			"1"
+    //                 }
+    //             }
+    //             "UnitCount"		"1"
+    //             "UnitLimit"		"0"
+    //             "GrantsGold"	"1"
+    //             "GrantsXP"		"1"
+    //             "SpawnRadius"	"10"
+    //             "OnSpawn"
+    //             {
+    //                 "ApplyModifier"
+    //                 {
+    //                     "ModifierName"	"modifier_phased"
+    //                     "Target"		"TARGET"
+    //                     "Duration"		"0.03"
+    //                 }
+
+    //                 "RunScript"
+    //                 {
+    //                     "ScriptFile"    "buildings/rally_point.lua"
+    //                     "Function"      "MoveToRallyPoint"
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+
+    // "undead_train_gargoyle_disabled"
+    // {
+    //     "BaseClass"             		"ability_datadriven"
+    //     "AbilityTextureName"			"undead_train_gargoyle"
+    //     "MaxLevel" 						"0"
+
+    //     "OnUpgrade"
+    //     {
+    //         "RunScript"
+    //         {
+    //             "ScriptFile"	"buildings/upgrades.lua"
+    //             "Function"		"SetLevel0"
+    //         }
+    //     }
+    // }
+
+    // "undead_train_abomination"
+    // {
+    //     "BaseClass"             		"ability_datadriven"
+    //     "AbilityTextureName"			"undead_train_abomination"
+    //     "MaxLevel" 						"1"
+
+    //     "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_AUTOCAST | DOTA_ABILITY_BEHAVIOR_IMMEDIATE | DOTA_ABILITY_BEHAVIOR_IGNORE_CHANNEL | DOTA_ABILITY_BEHAVIOR_IGNORE_PSEUDO_QUEUE"
+
+    //     "AbilityGoldCost"				"240" // From "GoldCost"
+    //     "AbilityChannelTime"			"%train_time" // From "BuildTime"
+
+    //     "AbilityMultiOrder"				"1"
+        
+    //     "AbilitySpecial"
+    //     {
+    //         "01"
+    //         {
+    //             "var_type"				"FIELD_FLOAT"
+    //             "train_time"			"40.0" 
+    //         }
+    //         "02"
+    //         {
+    //             "var_type"				"FIELD_INTEGER"
+    //             "gold_cost"				"240"
+    //         }
+    //         "03"
+    //         {
+    //             "var_type"				"FIELD_INTEGER"
+    //             "lumber_cost"			"70"
+    //         }
+    //         "04"
+    //         {
+    //             "var_type"				"FIELD_INTEGER"
+    //             "food_cost"				"4"
+    //         }
+    //     }
+
+    //     "OnSpellStart"
+    //     {
+    //         "RunScript"
+    //         {
+    //             "ScriptFile"	"buildings/queue.lua"
+    //             "Function"		"EnqueueUnit"
+    //         }
+    //     }
+
+    //     "OnChannelSucceeded"
+    //     {
+    //         // Consume the first item in the queue
+    //         "RunScript"
+    //         {
+    //             "ScriptFile"   	"buildings/queue.lua"
+    //             "Function"      "NextQueue"
+    //         }
+
+    //         "SpawnUnit"
+    //         {
+    //             "UnitName"		"undead_abomination"
+    //             "Target"
+    //             {
+    //                 "Center"		    "CASTER"
+    //                 "ScriptSelectPoints"
+    //                 {
+    //                     "ScriptFile"    "buildings/rally_point.lua"
+    //                     "Function"      "GetInitialRallyPoint"
+    //                     "Target"		"CASTER"
+    //                     "Count"			"1"
+    //                 }
+    //             }
+    //             "UnitCount"		"1"
+    //             "UnitLimit"		"0"
+    //             "GrantsGold"	"1"
+    //             "GrantsXP"		"1"
+    //             "SpawnRadius"	"10"
+    //             "OnSpawn"
+    //             {
+    //                 "ApplyModifier"
+    //                 {
+    //                     "ModifierName"	"modifier_phased"
+    //                     "Target"		"TARGET"
+    //                     "Duration"		"0.03"
+    //                 }
+
+    //                 "RunScript"
+    //                 {
+    //                     "ScriptFile"    "buildings/rally_point.lua"
+    //                     "Function"      "MoveToRallyPoint"
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+
+    // "undead_train_abomination_disabled"
+    // {
+    //     "BaseClass"             		"ability_datadriven"
+    //     "AbilityTextureName"			"undead_train_abomination"
+    //     "MaxLevel" 						"0"
+
+    //     "OnUpgrade"
+    //     {
+    //         "RunScript"
+    //         {
+    //             "ScriptFile"	"buildings/upgrades.lua"
+    //             "Function"		"SetLevel0"
+    //         }
+    //     }
+    // }
+
+    // "undead_train_meat_wagon"
+    // {
+    //     "BaseClass"             		"ability_datadriven"
+    //     "AbilityTextureName"			"undead_train_meat_wagon"
+    //     "MaxLevel" 						"1"
+
+    //     "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_AUTOCAST | DOTA_ABILITY_BEHAVIOR_IMMEDIATE | DOTA_ABILITY_BEHAVIOR_IGNORE_CHANNEL | DOTA_ABILITY_BEHAVIOR_IGNORE_PSEUDO_QUEUE"
+
+    //     "AbilityGoldCost"				"230" // From "GoldCost"
+    //     "AbilityChannelTime"			"%train_time" // From "BuildTime"
+
+    //     "AbilityMultiOrder"				"1"
+        
+    //     "AbilitySpecial"
+    //     {
+    //         "01"
+    //         {
+    //             "var_type"				"FIELD_FLOAT"
+    //             "train_time"			"45.0" 
+    //         }
+    //         "02"
+    //         {
+    //             "var_type"				"FIELD_INTEGER"
+    //             "gold_cost"				"230"
+    //         }
+    //         "03"
+    //         {
+    //             "var_type"				"FIELD_INTEGER"
+    //             "lumber_cost"			"50"
+    //         }
+    //         "04"
+    //         {
+    //             "var_type"				"FIELD_INTEGER"
+    //             "food_cost"				"4"
+    //         }
+    //     }
+
+    //     "OnSpellStart"
+    //     {
+    //         "RunScript"
+    //         {
+    //             "ScriptFile"	"buildings/queue.lua"
+    //             "Function"		"EnqueueUnit"
+    //         }
+    //     }
+
+    //     "OnChannelSucceeded"
+    //     {
+    //         // Consume the first item in the queue
+    //         "RunScript"
+    //         {
+    //             "ScriptFile"   	"buildings/queue.lua"
+    //             "Function"      "NextQueue"
+    //         }
+
+    //         "SpawnUnit"
+    //         {
+    //             "UnitName"		"undead_meat_wagon"
+    //             "Target"
+    //             {
+    //                 "Center"		    "CASTER"
+    //                 "ScriptSelectPoints"
+    //                 {
+    //                     "ScriptFile"    "buildings/rally_point.lua"
+    //                     "Function"      "GetInitialRallyPoint"
+    //                     "Target"		"CASTER"
+    //                     "Count"			"1"
+    //                 }
+    //             }
+    //             "UnitCount"		"1"
+    //             "UnitLimit"		"0"
+    //             "GrantsGold"	"1"
+    //             "GrantsXP"		"1"
+    //             "SpawnRadius"	"10"
+    //             "OnSpawn"
+    //             {
+    //                 "ApplyModifier"
+    //                 {
+    //                     "ModifierName"	"modifier_phased"
+    //                     "Target"		"TARGET"
+    //                     "Duration"		"0.03"
+    //                 }
+
+    //                 "RunScript"
+    //                 {
+    //                     "ScriptFile"    "buildings/rally_point.lua"
+    //                     "Function"      "MoveToRallyPoint"
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+
+    // "undead_train_obsidian_statue"
+    // {
+    //     "BaseClass"             		"ability_datadriven"
+    //     "AbilityTextureName"			"undead_train_obsidian_statue"
+    //     "MaxLevel" 						"1"
+
+    //     "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_AUTOCAST | DOTA_ABILITY_BEHAVIOR_IMMEDIATE | DOTA_ABILITY_BEHAVIOR_IGNORE_CHANNEL | DOTA_ABILITY_BEHAVIOR_IGNORE_PSEUDO_QUEUE"
+
+    //     "AbilityGoldCost"				"200" // From "GoldCost"
+    //     "AbilityChannelTime"			"%train_time" // From "BuildTime"
+
+    //     "AbilityMultiOrder"				"1"
+        
+    //     "AbilitySpecial"
+    //     {
+    //         "01"
+    //         {
+    //             "var_type"				"FIELD_FLOAT"
+    //             "train_time"			"45.0" 
+    //         }
+    //         "02"
+    //         {
+    //             "var_type"				"FIELD_INTEGER"
+    //             "gold_cost"				"200"
+    //         }
+    //         "03"
+    //         {
+    //             "var_type"				"FIELD_INTEGER"
+    //             "lumber_cost"			"35"
+    //         }
+    //         "04"
+    //         {
+    //             "var_type"				"FIELD_INTEGER"
+    //             "food_cost"				"3"
+    //         }
+    //     }
+
+    //     "OnSpellStart"
+    //     {
+    //         "RunScript"
+    //         {
+    //             "ScriptFile"	"buildings/queue.lua"
+    //             "Function"		"EnqueueUnit"
+    //         }
+    //     }
+
+    //     "OnChannelSucceeded"
+    //     {
+    //         // Consume the first item in the queue
+    //         "RunScript"
+    //         {
+    //             "ScriptFile"   	"buildings/queue.lua"
+    //             "Function"      "NextQueue"
+    //         }
+
+    //         "SpawnUnit"
+    //         {
+    //             "UnitName"		"undead_obsidian_statue"
+    //             "Target"
+    //             {
+    //                 "Center"		    "CASTER"
+    //                 "ScriptSelectPoints"
+    //                 {
+    //                     "ScriptFile"    "buildings/rally_point.lua"
+    //                     "Function"      "GetInitialRallyPoint"
+    //                     "Target"		"CASTER"
+    //                     "Count"			"1"
+    //                 }
+    //             }
+    //             "UnitCount"		"1"
+    //             "UnitLimit"		"0"
+    //             "GrantsGold"	"1"
+    //             "GrantsXP"		"1"
+    //             "SpawnRadius"	"10"
+    //             "OnSpawn"
+    //             {
+    //                 "ApplyModifier"
+    //                 {
+    //                     "ModifierName"	"modifier_phased"
+    //                     "Target"		"TARGET"
+    //                     "Duration"		"0.03"
+    //                 }
+
+    //                 "RunScript"
+    //                 {
+    //                     "ScriptFile"    "buildings/rally_point.lua"
+    //                     "Function"      "MoveToRallyPoint"
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+
+    // "undead_train_obsidian_statue_disabled"
+    // {
+    //     "BaseClass"             		"ability_datadriven"
+    //     "AbilityTextureName"			"undead_train_obsidian_statue"
+    //     "MaxLevel" 						"0"
+
+    //     "OnUpgrade"
+    //     {
+    //         "RunScript"
+    //         {
+    //             "ScriptFile"	"buildings/upgrades.lua"
+    //             "Function"		"SetLevel0"
+    //         }
+    //     }
+    // }
+
+    // "undead_train_necromancer"
+    // {
+    //     "BaseClass"             		"ability_datadriven"
+    //     "AbilityTextureName"			"undead_train_necromancer"
+    //     "MaxLevel" 						"1"
+
+    //     "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_AUTOCAST | DOTA_ABILITY_BEHAVIOR_IMMEDIATE | DOTA_ABILITY_BEHAVIOR_IGNORE_CHANNEL | DOTA_ABILITY_BEHAVIOR_IGNORE_PSEUDO_QUEUE"
+
+    //     "AbilityGoldCost"				"145" // From "GoldCost"
+    //     "AbilityChannelTime"			"%train_time" // From "BuildTime"
+
+    //     "AbilityMultiOrder"				"1"
+        
+    //     "AbilitySpecial"
+    //     {
+    //         "01"
+    //         {
+    //             "var_type"				"FIELD_FLOAT"
+    //             "train_time"			"24.0" 
+    //         }
+    //         "02"
+    //         {
+    //             "var_type"				"FIELD_INTEGER"
+    //             "gold_cost"				"145"
+    //         }
+    //         "03"
+    //         {
+    //             "var_type"				"FIELD_INTEGER"
+    //             "lumber_cost"			"20"
+    //         }
+    //         "04"
+    //         {
+    //             "var_type"				"FIELD_INTEGER"
+    //             "food_cost"				"2"
+    //         }
+    //     }
+
+    //     "OnSpellStart"
+    //     {
+    //         "RunScript"
+    //         {
+    //             "ScriptFile"	"buildings/queue.lua"
+    //             "Function"		"EnqueueUnit"
+    //         }
+    //     }
+
+    //     "OnChannelSucceeded"
+    //     {
+    //         // Consume the first item in the queue
+    //         "RunScript"
+    //         {
+    //             "ScriptFile"   	"buildings/queue.lua"
+    //             "Function"      "NextQueue"
+    //         }
+
+    //         "SpawnUnit"
+    //         {
+    //             "UnitName"		"undead_necromancer"
+    //             "Target"
+    //             {
+    //                 "Center"		    "CASTER"
+    //                 "ScriptSelectPoints"
+    //                 {
+    //                     "ScriptFile"    "buildings/rally_point.lua"
+    //                     "Function"      "GetInitialRallyPoint"
+    //                     "Target"		"CASTER"
+    //                     "Count"			"1"
+    //                 }
+    //             }
+    //             "UnitCount"		"1"
+    //             "UnitLimit"		"0"
+    //             "GrantsGold"	"1"
+    //             "GrantsXP"		"1"
+    //             "SpawnRadius"	"10"
+    //             "OnSpawn"
+    //             {
+    //                 "ApplyModifier"
+    //                 {
+    //                     "ModifierName"	"modifier_phased"
+    //                     "Target"		"TARGET"
+    //                     "Duration"		"0.03"
+    //                 }
+
+    //                 "RunScript"
+    //                 {
+    //                     "ScriptFile"    "buildings/rally_point.lua"
+    //                     "Function"      "MoveToRallyPoint"
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+
+    // "undead_train_banshee"
+    // {
+    //     "BaseClass"             		"ability_datadriven"
+    //     "AbilityTextureName"			"undead_train_banshee"
+    //     "MaxLevel" 						"1"
+
+    //     "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_AUTOCAST | DOTA_ABILITY_BEHAVIOR_IMMEDIATE | DOTA_ABILITY_BEHAVIOR_IGNORE_CHANNEL | DOTA_ABILITY_BEHAVIOR_IGNORE_PSEUDO_QUEUE"
+
+    //     "AbilityGoldCost"				"155" // From "GoldCost"
+    //     "AbilityChannelTime"			"%train_time" // From "BuildTime"
+
+    //     "AbilityMultiOrder"				"1"
+        
+    //     "AbilitySpecial"
+    //     {
+    //         "01"
+    //         {
+    //             "var_type"				"FIELD_FLOAT"
+    //             "train_time"			"28.0" 
+    //         }
+    //         "02"
+    //         {
+    //             "var_type"				"FIELD_INTEGER"
+    //             "gold_cost"				"155"
+    //         }
+    //         "03"
+    //         {
+    //             "var_type"				"FIELD_INTEGER"
+    //             "lumber_cost"			"30"
+    //         }
+    //         "04"
+    //         {
+    //             "var_type"				"FIELD_INTEGER"
+    //             "food_cost"				"2"
+    //         }
+    //     }
+
+    //     "OnSpellStart"
+    //     {
+    //         "RunScript"
+    //         {
+    //             "ScriptFile"	"buildings/queue.lua"
+    //             "Function"		"EnqueueUnit"
+    //         }
+    //     }
+
+    //     "OnChannelSucceeded"
+    //     {
+    //         // Consume the first item in the queue
+    //         "RunScript"
+    //         {
+    //             "ScriptFile"   	"buildings/queue.lua"
+    //             "Function"      "NextQueue"
+    //         }
+
+    //         "SpawnUnit"
+    //         {
+    //             "UnitName"		"undead_banshee"
+    //             "Target"
+    //             {
+    //                 "Center"		    "CASTER"
+    //                 "ScriptSelectPoints"
+    //                 {
+    //                     "ScriptFile"    "buildings/rally_point.lua"
+    //                     "Function"      "GetInitialRallyPoint"
+    //                     "Target"		"CASTER"
+    //                     "Count"			"1"
+    //                 }
+    //             }
+    //             "UnitCount"		"1"
+    //             "UnitLimit"		"0"
+    //             "GrantsGold"	"1"
+    //             "GrantsXP"		"1"
+    //             "SpawnRadius"	"10"
+    //             "OnSpawn"
+    //             {
+    //                 "ApplyModifier"
+    //                 {
+    //                     "ModifierName"	"modifier_phased"
+    //                     "Target"		"TARGET"
+    //                     "Duration"		"0.03"
+    //                 }
+
+    //                 "RunScript"
+    //                 {
+    //                     "ScriptFile"    "buildings/rally_point.lua"
+    //                     "Function"      "MoveToRallyPoint"
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+
+    // "undead_train_frost_wyrm"
+    // {
+    //     "BaseClass"             		"ability_datadriven"
+    //     "AbilityTextureName"			"undead_train_frost_wyrm"
+    //     "MaxLevel" 						"1"
+
+    //     "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_AUTOCAST | DOTA_ABILITY_BEHAVIOR_IMMEDIATE | DOTA_ABILITY_BEHAVIOR_IGNORE_CHANNEL | DOTA_ABILITY_BEHAVIOR_IGNORE_PSEUDO_QUEUE"
+
+    //     "AbilityGoldCost"				"385" // From "GoldCost"
+    //     "AbilityChannelTime"			"%train_time" // From "BuildTime"
+
+    //     "AbilityMultiOrder"				"1"
+        
+    //     "AbilitySpecial"
+    //     {
+    //         "01"
+    //         {
+    //             "var_type"				"FIELD_FLOAT"
+    //             "train_time"			"65.0" 
+    //         }
+    //         "02"
+    //         {
+    //             "var_type"				"FIELD_INTEGER"
+    //             "gold_cost"				"385"
+    //         }
+    //         "03"
+    //         {
+    //             "var_type"				"FIELD_INTEGER"
+    //             "lumber_cost"			"120"
+    //         }
+    //         "04"
+    //         {
+    //             "var_type"				"FIELD_INTEGER"
+    //             "food_cost"				"7"
+    //         }
+    //     }
+
+    //     "OnSpellStart"
+    //     {
+    //         "RunScript"
+    //         {
+    //             "ScriptFile"	"buildings/queue.lua"
+    //             "Function"		"EnqueueUnit"
+    //         }
+    //     }
+
+    //     "OnChannelSucceeded"
+    //     {
+    //         // Consume the first item in the queue
+    //         "RunScript"
+    //         {
+    //             "ScriptFile"   	"buildings/queue.lua"
+    //             "Function"      "NextQueue"
+    //         }
+
+    //         "SpawnUnit"
+    //         {
+    //             "UnitName"		"undead_frost_wyrm"
+    //             "Target"
+    //             {
+    //                 "Center"		    "CASTER"
+    //                 "ScriptSelectPoints"
+    //                 {
+    //                     "ScriptFile"    "buildings/rally_point.lua"
+    //                     "Function"      "GetInitialRallyPoint"
+    //                     "Target"		"CASTER"
+    //                     "Count"			"1"
+    //                 }
+    //             }
+    //             "UnitCount"		"1"
+    //             "UnitLimit"		"0"
+    //             "GrantsGold"	"1"
+    //             "GrantsXP"		"1"
+    //             "SpawnRadius"	"10"
+    //             "OnSpawn"
+    //             {
+    //                 "ApplyModifier"
+    //                 {
+    //                     "ModifierName"	"modifier_phased"
+    //                     "Target"		"TARGET"
+    //                     "Duration"		"0.03"
+    //                 }
+
+    //                 "RunScript"
+    //                 {
+    //                     "ScriptFile"    "buildings/rally_point.lua"
+    //                     "Function"      "MoveToRallyPoint"
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+}

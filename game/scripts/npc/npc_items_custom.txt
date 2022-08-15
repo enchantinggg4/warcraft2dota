@@ -1,3 +1,5 @@
+#base "items/queue/item_undead_queue.kv"
+
 "DOTAAbilities"
 {
 }

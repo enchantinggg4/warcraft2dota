@@ -27,8 +27,6 @@ export function InstallLumber(){
         23: 0
     };
     
-    print(PlayerResource)
-    
     PlayerResource.SetLumber = (pid: PlayerID, amount: number) => {
         lumberMap[pid] = amount;
     }

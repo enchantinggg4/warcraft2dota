@@ -13,7 +13,7 @@ declare interface EventKeys {
 
 declare interface BuildingHelper {
 
-    PlaceBuilding(player: unknown, name: unknown, location: unknown, construction_size: unknown, pathing_size: unknown, angle: unknown): void
+    PlaceBuilding(player: CDOTAPlayerController, name: string, location: Vector, construction_size: number, pathing_size: number, angle: number): CDOTA_BaseNPC
 
     AddBuilding(keys: Partial<EventKeys>): keys is EventKeys;
 
@@ -21,6 +21,8 @@ declare interface BuildingHelper {
     InitializeBuilder(npc: CDOTA_BaseNPC): void
 
     GetConstructionSize(npc: CDOTA_BaseNPC | string): number;
+
+    GetBlockPathingSize(npc: string): number
 
     GetPlayerTable(playerId: PlayerID): any
 

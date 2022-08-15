@@ -9,7 +9,11 @@ import { Spawns } from "./util/Spawns";
 import { Utility } from "./util/Utility";
 import { InstallLumber } from "./lib/lumber"
 import { ResourceManager } from "./ResourceManager";
+import { UnitMap } from "./util/UnitMap";
+import { Units } from "./util/munits";
+import { Queue } from "./buildings/queue";
 
+import "./util/extend_npc"
 const heroSelectionTime = 20;
 
 declare global {
@@ -109,7 +113,8 @@ export class GameMode {
         if (!IsServer()) return;
         const npc = EntIndexToHScript(event.entindex) as CDOTA_BaseNPC;
 
-        Spawns.DoSpawns(npc);
+        // Spawns.DoSpawns(npc);
+        Units.Init(npc)
 
         if (npc.HasAbility("train_acolyte")) {
             npc.FindAbilityByName("train_acolyte")?.SetLevel(1);
@@ -137,25 +142,33 @@ export class GameMode {
         // Create throne
 
 
-        
+
 
         // npc_dota_building_necropolis
         const closestMine = Utility.FindClosestFreeMine(player.GetAbsOrigin());
 
-        const castle = CreateUnitByName("npc_dota_building_necropolis", player.GetAbsOrigin(), false, player, player, player.GetTeam());
+        print(PlayerResource.GetSelectedHeroEntity(playerId))
+        const castle: CDOTA_BaseNPC = BuildingHelper.PlaceBuilding(
+            player,
+            UnitMap.NECROPOLIS,
+            player.GetAbsOrigin(),
+            BuildingHelper.GetConstructionSize(UnitMap.NECROPOLIS),
+            BuildingHelper.GetBlockPathingSize(UnitMap.NECROPOLIS),
+            0
+        )
+
         castle.SetControllableByPlayer(playerId, true);
         const position: Vector = player.GetAbsOrigin().__add(player.GetForwardVector().__mul(300));
 
-        Blight.Create(castle, "tiny");
-
+        Blight.Create(castle, "large");
 
         for (let i = 0; i < 3; i++) {
-            const acolyte: CDOTA_BaseNPC = CreateUnitByName("npc_dota_undead_acolyte", position, true, player, player, player.GetTeam());
+            const acolyte: CDOTA_BaseNPC = CreateUnitByName(UnitMap.ACOLYTE, position, true, player, player, player.GetTeam());
             acolyte.SetControllableByPlayer(playerId, true);
         }
 
         for (let i = 0; i < 1; i++) {
-            const ghoul: CDOTA_BaseNPC = CreateUnitByName("npc_dota_undead_ghoul", position, true, player, player, player.GetTeam());
+            const ghoul: CDOTA_BaseNPC = CreateUnitByName(UnitMap.GHOUL, position, true, player, player, player.GetTeam());
             ghoul.SetControllableByPlayer(playerId, true);
         }
     }
