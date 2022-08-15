@@ -81,7 +81,7 @@ export function tobool(s: any) {
     return s == "true" || s == "1" || s == 1
 }
 
-export function IsValidAlive(unit: CDOTA_BaseNPC) {
+export function IsValidAlive(unit: CDOTA_BaseNPC | undefined) {
     return IsValidEntity(unit) && unit.IsAlive()
 }
 
@@ -395,8 +395,18 @@ export function IsNightElf(unit: CDOTA_BaseNPC) {
 }
 
 
+export function GetFoodProduced(unit: CDOTA_BaseNPC): number {
+    if (unit && IsValidEntity(unit)) {
+        if (GameRules.UnitKV[unit.GetUnitName()] && GameRules.UnitKV[unit.GetUnitName()].FoodProduced) {
+            return GameRules.UnitKV[unit.GetUnitName()].FoodProduced;
+        }
+    }
+    return 0;
+}
 
-
+export function IsCityCenter(unit: CDOTA_BaseNPC): boolean {
+    return IsCustomBuilding(unit) && unit.GetUnitLabel().includes("city_center");
+}
 
 // logging
 

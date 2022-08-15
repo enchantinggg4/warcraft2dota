@@ -2,6 +2,16 @@ import { BuildInfo } from "./abilities/builder/generic_build_ability";
 import { Resource } from "./types/GoldMine";
 
 export class ResourceManager {
+    static SetCityCenterLevel(playerID: PlayerID, level: number) {
+        this.CityLevels[playerID] = level;
+    }
+
+    static GetCityLevel(playerID: PlayerID): number {
+        return this.CityLevels[playerID]
+    }
+    static ModifyFoodLimit(playerID: number, newFoodLimit: number) {
+        // todo
+    }
 
     public static GetGold(playerId: PlayerID): number {
         return PlayerResource.GetGold(playerId)
@@ -80,4 +90,34 @@ export class ResourceManager {
             lumber
         });
     }
+
+
+
+    private static CityLevels: Record<PlayerID, number> = {
+        0: 0,
+        1: 0,
+        2: 0,
+        "-1": 0,
+        3: 0,
+        4: 0,
+        5: 0,
+        6: 0,
+        7: 0,
+        8: 0,
+        9: 0,
+        10: 0,
+        11: 0,
+        12: 0,
+        13: 0,
+        14: 0,
+        15: 0,
+        16: 0,
+        17: 0,
+        18: 0,
+        19: 0,
+        20: 0,
+        21: 0,
+        22: 0,
+        23: 0
+    };
 }

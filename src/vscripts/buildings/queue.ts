@@ -6,6 +6,7 @@ import { GetNumItemsInInventory, IsInFirstSlot, ReorderItems } from "../util/mit
 import { EnoughForDoMyPower } from "../util/mplayers";
 import { UnitMap } from "../util/UnitMap";
 import { HasTrainAbility, IsChanneling, IsNightElf, log, SendErrorMessage } from "../util/Utility";
+import { StartUpgrade } from "./upgrades";
 
 
 
@@ -153,7 +154,8 @@ export class Queue {
 
 
 // Creates an item on the buildings inventory to consume the queue.
-export function EnqueueUnit(this: void, { caster, ability }: EnqueueEvt) {
+export function EnqueueUnit(this: void, evt: EnqueueEvt & { Action?: "StartUpgrade"}) {
+    const { caster, ability, Action } = evt;
 
     if(caster.queue?.length == 6){
         // Do nothing, we already full
@@ -227,9 +229,9 @@ export function EnqueueUnit(this: void, { caster, ability }: EnqueueEvt) {
         }
 
         // TODO:
-        // if(UpdateEventPoints.Action == "StartUpgrade"){
-        //     StartUpgrade(event);
-        // }
+        if(Action == "StartUpgrade"){
+            StartUpgrade(evt);
+        }
 
 
     } else {

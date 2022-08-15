@@ -969,7 +969,7 @@ end
 function BuildingHelper:UpgradeBuilding(building, newName)
     local oldBuildingName = building:GetUnitName()
     BuildingHelper:print("Upgrading Building: "..oldBuildingName.." -> "..newName)
-    local playerID = building:GetPlayerOwnerID()
+    local playerID = building:GetMainControllingPlayer()
     local position = building:GetAbsOrigin()
     local angle = GetUnitKV(newName, "ModelRotation") or -building:GetAngles().y
     

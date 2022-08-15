@@ -41,3 +41,8 @@ declare interface CDOTA_BaseNPC {
 declare interface CustomNetTableDeclarations {
     builders: any;
 }
+
+
+declare interface CDOTAGameRules {
+    UnitKV: any;
+}

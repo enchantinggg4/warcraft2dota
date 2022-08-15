@@ -27,6 +27,9 @@ declare interface BuildingHelper {
     GetPlayerTable(playerId: PlayerID): any
 
     SendGNV(args: { PlayerID: PlayerID}): void;
+
+
+    UpgradeBuilding<T = CDOTA_BaseNPC>(building: CDOTA_BaseNPC, newUnitName: string): T
 }
 
 declare const BuildingHelper: BuildingHelper;

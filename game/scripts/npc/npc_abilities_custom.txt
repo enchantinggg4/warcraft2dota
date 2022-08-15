@@ -7,6 +7,7 @@
 
 #base "abilities/undead/undead_train_abilities.kv"
 #base "abilities/undead/undead_build_abilities.kv"
+#base "abilities/undead/undead_building_upgrades.kv"
 #base "abilities/undead/undead_abilities.kv"
 
 "DOTAAbilities"
