@@ -98,9 +98,10 @@ export class Queue {
             }
 
             // Check the first item that contains "train" on the queue
-            for (let itemSlot = 0; itemSlot < 5; itemSlot++) {
+            for (let itemSlot = 0; itemSlot < 6; itemSlot++) {
                 const item = building.GetItemInSlot(itemSlot);
                 if (item && IsValidEntity(item)) {
+                    log("Push in think() " + building.queue.length);
                     building.queue.push(item.GetEntityIndex());
                     const itemName = item.GetAbilityName();
 
@@ -125,7 +126,6 @@ export class Queue {
                                 const time = abilityToChannel.GetChannelTime()
                                 Timers.CreateTimer(time, () => {
                                     if (IsValidEntity(building) && building.IsAlive() && IsValidEntity(item)) {
-                                        print('Interrupt2?')
                                         abilityToChannel.EndChannel(false);
                                         ReorderItems(building)
                                     }
@@ -154,6 +154,12 @@ export class Queue {
 
 // Creates an item on the buildings inventory to consume the queue.
 export function EnqueueUnit(this: void, { caster, ability }: EnqueueEvt) {
+
+    if(caster.queue?.length == 6){
+        // Do nothing, we already full
+        return;
+    }
+
     const playerID = caster.GetMainControllingPlayer() as PlayerID;
     const goldCost = ability.GetLevelSpecialValueFor("gold_cost", ability.GetLevel() - 1);
     const lumberCost = ability.GetLevelSpecialValueFor("lumber_cost", ability.GetLevel() - 1);
@@ -162,6 +168,9 @@ export function EnqueueUnit(this: void, { caster, ability }: EnqueueEvt) {
     if (!caster.queue) {
         caster.queue = []
     }
+
+
+    log(`Trainbuilding ${caster.GetUnitName()} has ${caster.queue.length} queue items`)
 
     // Check food
     let foodCost = ability.GetLevelSpecialValueFor("food_cost", ability.GetLevel() - 1) || 0;
@@ -193,11 +202,14 @@ export function EnqueueUnit(this: void, { caster, ability }: EnqueueEvt) {
         const item = CreateItem(itemName, player, player)!;
         caster.AddItem(item);
 
+        caster.queue = [];
+
 
         // RemakeQueue
-        for (let itemSlot = 0; itemSlot < 5; itemSlot++) {
+        for (let itemSlot = 0; itemSlot < 6; itemSlot++) {
             const item = caster.GetItemInSlot(itemSlot)
             if (item) {
+                log("Push in enqueue() " + caster.queue.length);
                 caster.queue!.push(item.GetEntityIndex());
             }
         }
@@ -284,9 +296,8 @@ export function NextQueue(this: void, { caster, ability }: EnqueueEvt) {
 
     const hAbility = EntIndexToHScript(ability.GetEntityIndex()) as CDOTABaseAbility;
 
-    for (let itemSlot = 0; itemSlot < 5; itemSlot++) {
+    for (let itemSlot = 0; itemSlot < 6; itemSlot++) {
         const item = caster.GetItemInSlot(itemSlot)
-        print(item)
         if (item) {
             const itemName = tostring(item.GetAbilityName());
 
@@ -295,6 +306,7 @@ export function NextQueue(this: void, { caster, ability }: EnqueueEvt) {
                 const trainAbility = caster.FindAbilityByName(trainAbilityName)
                 const queueElement = caster.queue!.indexOf(item.GetEntityIndex());
                 if (IsValidEntity(item)) {
+                    log("Splice in NextQueue() " + caster.queue!.length);
                     caster.queue!.splice(queueElement, 1)
                     caster.RemoveItem(item)
                 }
@@ -303,6 +315,8 @@ export function NextQueue(this: void, { caster, ability }: EnqueueEvt) {
             }
         }
     }
+
+    ReorderItems(caster)
 
 }
 
