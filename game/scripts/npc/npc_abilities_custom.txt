@@ -1,6 +1,4 @@
-#base "heroes/meepo.kv"
-#base "abilities/train_acolyte.kv"
-#base "abilities/acolyte_haunt_mine.kv"
+
 #base "abilities/worker_harvest_lumber.kv"
 #base "abilities/worker_deposit_payload.kv"
 

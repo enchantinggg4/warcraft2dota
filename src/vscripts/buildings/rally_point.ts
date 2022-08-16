@@ -1,7 +1,7 @@
 import { registerEntityFunction } from "../lib/dota_ts_adapter";
 import { ResearchManager, ResearchMap } from "../ResearchManager";
 import { Building, EnqueueEvt } from "../types/gen";
-import { IsBuilder } from "../util/munits";
+import { IsBuilder } from "../util/Units";
 import { RepositionAroundRallyPoint } from "../util/Utility";
 
 interface Ext {

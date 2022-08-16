@@ -1,6 +1,11 @@
+import { worker_deposit_payload } from "../abilities/worker/worker_deposit_payload";
+import { worker_harvest_lumber } from "../abilities/worker/worker_harvest_lumber";
 import { Queue } from "../buildings/queue";
+import { modifier_gold_deposit } from "../modifiers/building/modifer_gold_deposit";
+import { modifier_lumber_deposit } from "../modifiers/building/modifier_lumber_deposit";
+import { modifier_specially_deniable } from "../modifiers/misc/modifier_specially_deniable";
 import { modifier_harvest_tree } from "../modifiers/worker/modifier_harvest_tree";
-import { FindEmptyNavigableTreeNearby, IsCustomBuilding, IsValidAlive, tobool } from "./Utility";
+import { CanGatherTree, FindEmptyNavigableTreeNearby, IsCityCenter, IsCustomBuilding, IsValidAlive, log, tobool } from "./Utility";
 
 interface Unit extends CDOTA_BaseNPC {
     bFirstSpawned?: boolean
@@ -9,11 +14,7 @@ interface Unit extends CDOTA_BaseNPC {
 
 export class Units {
 
-    public static Init(unit: Unit) {
-        if (unit.bFirstSpawned && !unit.IsRealHero()) return;
-
-        unit.bFirstSpawned = true;
-
+    private static SetupAttackAndArmor(unit: Unit) {
         // Apply armor and damage modifier (for visuals)
         const attackType = unit.GetAttackType();
         if (attackType && unit.GetAttackDamage() > 0) {
@@ -29,17 +30,10 @@ export class Units {
         if (unit.HasSplashAttack()) {
             unit.AddNewModifier(unit, undefined, `modifier_splash_attack`, {});
         }
+    }
 
+    private static SetupAttackSystem(unit: Unit) {
         const bBuilder = IsBuilder(unit)
-        const bBuilding = IsCustomBuilding(unit)
-
-        if (bBuilder) {
-            unit.IsIdle = function () {
-                return !unit.IsMoving() && unit.state == 'idle'
-            }
-        }
-
-
         const attacksEnabled = unit.GetAttacksEnabled()
         if (attacksEnabled != "none") {
             if (bBuilder || unit.GetUnitName() == "neutral_goblin_sapper") {
@@ -54,17 +48,54 @@ export class Units {
                 // NeutralAI.Start(unit)
             }
         }
+    }
 
+    private static SetupBuilder(unit: Unit) {
+        const bBuilder = IsBuilder(unit)
 
-        unit.AddNewModifier(unit, undefined, "modifier_specially_deniable", {});
+        if (bBuilder) {
+            unit.IsIdle = function () {
+                return !unit.IsMoving() && unit.state == 'idle'
+            }
+        }
+    }
 
+    private static AdjustHull(unit: Unit) {
+        const bBuilding = IsCustomBuilding(unit)
         // Adjust hull
         unit.AddNewModifier(undefined, undefined, "modifier_phased", { duration: 0.1 })
         const collisionSize = unit.GetCollisionSize()
         if (!bBuilding && collisionSize) {
             unit.SetHullRadius(collisionSize);
         }
+    }
 
+
+    private static SetupResource(unit: Unit) {
+        Timers.CreateTimer(0.3, () => {
+            if (IsCityCenter(unit)) {
+                unit.AddNewModifier(unit, undefined, modifier_gold_deposit.name, {});
+                unit.AddNewModifier(unit, undefined, modifier_lumber_deposit.name, {});
+            }
+        })
+        
+    }
+
+    public static Init(unit: Unit) {
+        if (unit.bFirstSpawned && !unit.IsRealHero()) return;
+
+        unit.bFirstSpawned = true;
+
+        this.SetupAttackAndArmor(unit);
+        this.SetupAttackSystem(unit);
+        this.SetupBuilder(unit);
+        this.AdjustHull(unit);
+        this.SetupResource(unit);
+
+
+
+        // Everything can be attacked by allies
+        unit.AddNewModifier(unit, undefined, modifier_specially_deniable.name, {});
 
         // Disable gold bounty for non neutral kills
         if (unit.GetTeamNumber() != DotaTeam.NEUTRALS) {
@@ -73,9 +104,17 @@ export class Units {
         }
 
 
-        // Special tree-attacking unit
-        if (unit.GetKeyValue("AttacksTrees")) {
+        // Special tree-gathering units
+        if (CanGatherTree(unit)) {
             unit.AddNewModifier(unit, undefined, modifier_harvest_tree.name, {});
+
+            const harvest = unit.AddAbility(worker_harvest_lumber.name);
+            harvest.SetLevel(1)
+            harvest.SetHidden(true)
+
+            const deposit = unit.AddAbility(worker_deposit_payload.name)
+            deposit.SetLevel(1)
+            deposit.SetHidden(true)
         }
 
 
@@ -109,7 +148,7 @@ export class Units {
             // end
 
             // Building Queue
-            if (unit.GetKeyValue("HasQueue")){
+            if (unit.GetKeyValue("HasQueue")) {
                 Queue.Init(unit)
             }
 

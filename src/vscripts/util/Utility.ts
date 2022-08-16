@@ -408,6 +408,10 @@ export function IsCityCenter(unit: CDOTA_BaseNPC): boolean {
     return IsCustomBuilding(unit) && unit.GetUnitLabel().includes("city_center");
 }
 
+export function CanGatherTree(unit: CDOTA_BaseNPC): boolean {
+    return (unit.GetKeyValue<string>("GatherResources") || "").includes("lumber")
+}
+
 // logging
 
 export function log(...args: any[]) {

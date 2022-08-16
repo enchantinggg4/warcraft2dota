@@ -1,7 +1,7 @@
 import { BaseModifier, registerModifier } from "../../lib/dota_ts_adapter";
 import { Resource, ResourceHarvester } from "../../types/GoldMine";
 import { Abilities } from "../../util/Abilities";
-import { DistanceTo, DistanceToVec, Utility } from "../../util/Utility";
+import { DistanceTo, DistanceToVec, log, Utility } from "../../util/Utility";
 
 
 @registerModifier()
@@ -18,7 +18,7 @@ export class modifier_harvest_tree_active extends BaseModifier {
             this.parent = this.GetParent() as ResourceHarvester;
 
             this.anchor = Vector(+params.x, +params.y, +params.z);
-            if(this.parent.payload)
+            if (this.parent.payload)
                 this.DepositResources();
             else
                 this.HarvestTree();
@@ -40,7 +40,6 @@ export class modifier_harvest_tree_active extends BaseModifier {
 
 
     OnAbilityFullyCast(event: ModifierAbilityEvent) {
-
         if (event.ability.GetName() == Abilities.WorkerHarvestLumber) {
             if (!this.parent.payload) {
                 this.HarvestTree();
@@ -59,15 +58,17 @@ export class modifier_harvest_tree_active extends BaseModifier {
     }
 
     private DepositResources() {
-        const deposit = Utility.FindClosestDeposit(this.parent, Resource.LUMBER)
-        if (!deposit) return;
+        const deposit = Utility.FindClosestDeposit(this.parent, Resource.LUMBER);
+        if (!deposit) {
+            log("No deposit!")
+            return
+        };
 
         const ability = this.parent.FindAbilityByName(Abilities.WorkerDepositPayload);
         if (!ability) {
             print("Worker doesnt have ability!!!")
             return;
         }
-
         this.parent.CastAbilityOnTarget(
             deposit,
             ability,
@@ -96,20 +97,6 @@ export class modifier_harvest_tree_active extends BaseModifier {
             ability,
             this.parent.GetMainControllingPlayer() as PlayerID
         )
-    }
-
-    OnIntervalThink(): void {
-        // 1) Do we have payload?
-        if (this.parent.payload) {
-            // We want to find closest deposit
-
-
-        } else {
-            // we want to find a tree to mine
-
-
-
-        }
     }
 
 

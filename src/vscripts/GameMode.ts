@@ -10,7 +10,7 @@ import { Utility } from "./util/Utility";
 import { InstallLumber } from "./lib/lumber"
 import { ResourceManager } from "./ResourceManager";
 import { UnitMap } from "./util/UnitMap";
-import { Units } from "./util/munits";
+import { Units } from "./util/Units";
 import { Queue } from "./buildings/queue";
 
 import "./util/extend_npc"
@@ -184,12 +184,12 @@ export class GameMode {
             if (targetType == -1) continue;
 
             if (targetType == 0) {
-                const mine = CreateUnitByName("npc_dota_building_neutral_gold_mine", entity.GetAbsOrigin(), false, undefined, undefined, DotaTeam.NEUTRALS) as GoldMine;
-                mine.gold = 15000;
+                // const mine = CreateUnitByName("npc_dota_building_neutral_gold_mine", entity.GetAbsOrigin(), false, undefined, undefined, DotaTeam.NEUTRALS) as GoldMine;
+                // mine.gold = 15000;
 
-                mine.AddNewModifier(mine, undefined, modifier_fake_invul.name, { duration: -1 });
-                mine.AddNewModifier(mine, undefined, modifier_gold_mine.name, { duration: -1 });
-                mine.RemoveModifierByName("modifier_invulnerable");
+                // mine.AddNewModifier(mine, undefined, modifier_fake_invul.name, { duration: -1 });
+                // mine.AddNewModifier(mine, undefined, modifier_gold_mine.name, { duration: -1 });
+                // mine.RemoveModifierByName("modifier_invulnerable");
             }
 
         }

@@ -9,8 +9,9 @@ export abstract class generic_unit_train extends BaseAbility {
 
     abstract GetChannelTime(): number
 
+    // DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_AUTOCAST | DOTA_ABILITY_BEHAVIOR_IMMEDIATE | DOTA_ABILITY_BEHAVIOR_IGNORE_CHANNEL | DOTA_ABILITY_BEHAVIOR_IGNORE_PSEUDO_QUEUE
     GetBehavior(): AbilityBehavior | Uint64 {
-        return AbilityBehavior.NO_TARGET// + AbilityBehavior.
+        return AbilityBehavior.NO_TARGET + AbilityBehavior.IMMEDIATE + AbilityBehavior.IGNORE_CHANNEL
     }
 
     OnSpellStart() {

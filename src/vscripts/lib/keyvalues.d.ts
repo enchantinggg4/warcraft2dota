@@ -33,6 +33,9 @@ declare interface CDOTA_BaseNPC {
 
     GetCollisionSize(): number
 
+
+    SetCanAttackTrees(bAble: boolean): void
+
     /// ???
 
     state?: 'idle' | unknown

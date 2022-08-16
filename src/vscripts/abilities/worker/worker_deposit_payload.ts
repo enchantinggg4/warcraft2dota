@@ -3,15 +3,23 @@ import { modifier_gold_deposit } from "../../modifiers/building/modifer_gold_dep
 import { modifier_lumber_deposit } from "../../modifiers/building/modifier_lumber_deposit";
 import { ResourceManager } from "../../ResourceManager";
 import { Resource, ResourceHarvester } from "../../types/GoldMine";
+import { log } from "../../util/Utility";
 
 @registerAbility()
 export class worker_deposit_payload extends BaseAbility {
 
     counter = 0;
 
+    IsHiddenAbilityCastable() {
+        return true;
+    }
+
+    GetCastRange(): number {
+        return 50;
+    }
 
     OnSpellStart(): void {
-        if(this.counter++ != 2) return;
+        if (this.counter++ != 2) return;
 
         const parent = this.GetOwner() as ResourceHarvester;
         const payload = parent.payload;

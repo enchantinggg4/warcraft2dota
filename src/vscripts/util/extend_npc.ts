@@ -1,3 +1,4 @@
+import { modifier_harvest_tree } from "../modifiers/worker/modifier_harvest_tree"
 import { FindEmptyNavigableTreeNearby } from "./Utility"
 
 // @ts-ignore
@@ -85,3 +86,11 @@ CDOTA_BaseNPC.GetFormationRank = function (this: CDOTA_BaseNPC) {
     return this.GetKeyValue("FormationRank") || 0
 }
 
+CDOTA_BaseNPC.SetCanAttackTrees = function (this: CDOTA_BaseNPC, bAble: boolean) {
+    if (bAble) {
+        this.AddNewModifier(this, undefined, modifier_harvest_tree.name, {});
+    }
+    else {
+        this.RemoveModifierByName(modifier_harvest_tree.name);
+    }
+};
