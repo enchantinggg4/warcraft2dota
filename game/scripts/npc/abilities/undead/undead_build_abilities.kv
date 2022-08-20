@@ -18,9 +18,12 @@
 // undead_tomb_of_relics - No requirements
 "DOTAAbilities"
 {
+    
+    // Done
     "undead_build_crypt"
     {
-        "BaseClass"             		"ability_datadriven"
+        "BaseClass"             		"ability_lua"
+        "ScriptFile"                    "abilities/undead/undead_build/undead_build_crypt.lua"
         "AbilityTextureName"			"undead_build_crypt"
         "MaxLevel" 						"1"
 
@@ -35,7 +38,6 @@
 
         "UnitName"						"undead_crypt"
         "AbilityCooldown"				"0"
-        "AbilityGoldCost"				"200"
         // End of BuildingHelper info
 
         "AbilitySpecial"
@@ -56,15 +58,6 @@
                 "lumber_cost"			"50"
             }
         }
-        
-        "OnSpellStart"
-        {
-            "RunScript"
-            {
-                "ScriptFile"	"units/builder.lua"
-                "Function"		"Build"
-            }
-        }
     }
 
     "undead_build_temple_of_the_damned_disabled"
@@ -74,9 +67,11 @@
         "MaxLevel" 						"0"
     }
 
+    // Done
     "undead_build_temple_of_the_damned"
     {
-        "BaseClass"             		"ability_datadriven"
+        "BaseClass"             		"ability_lua"
+        "ScriptFile"                    "abilities/undead/undead_build/undead_build_temple_of_the_damned.lua"
         "AbilityTextureName"			"undead_build_temple_of_the_damned"
         "MaxLevel" 						"1"
 
@@ -91,7 +86,6 @@
 
         "UnitName"						"undead_temple_of_the_damned"
         "AbilityCooldown"				"0"
-        "AbilityGoldCost"				"155"
         // End of BuildingHelper info
 
         "AbilitySpecial"
@@ -112,15 +106,6 @@
                 "lumber_cost"			"140"
             }
         }
-
-        "OnSpellStart"
-        {
-            "RunScript"
-            {
-                "ScriptFile"	"units/builder.lua"
-                "Function"		"Build"
-            }
-        }
     }
 
     "undead_build_slaughterhouse_disabled"
@@ -130,9 +115,14 @@
         "MaxLevel" 						"0"
     }
 
+    // Done
     "undead_build_slaughterhouse"
     {
-        "BaseClass"             		"ability_datadriven"
+        // "BaseClass"             		"ability_datadriven"
+
+        "BaseClass"             		"ability_lua"
+        "ScriptFile"                    "abilities/undead/undead_build/undead_build_slaughterhouse.lua"
+
         "AbilityTextureName"			"undead_build_slaughterhouse"
         "MaxLevel" 						"1"
 
@@ -147,7 +137,6 @@
 
         "UnitName"						"undead_slaughterhouse"
         "AbilityCooldown"				"0"
-        "AbilityGoldCost"				"140"
         // End of BuildingHelper info
 
         "AbilitySpecial"
@@ -168,15 +157,6 @@
                 "lumber_cost"			"135"
             }
         }
-
-        "OnSpellStart"
-        {
-            "RunScript"
-            {
-                "ScriptFile"	"units/builder.lua"
-                "Function"		"Build"
-            }
-        }
     }
 
     "undead_build_sacrificial_pit_disabled"
@@ -186,9 +166,11 @@
         "MaxLevel" 						"0"
     }
 
+    // Done
     "undead_build_sacrificial_pit"
     {
-        "BaseClass"             		"ability_datadriven"
+        "BaseClass"             		"ability_lua"
+        "ScriptFile"                    "abilities/undead/undead_build/undead_build_sacrificial_pit.lua"
         "AbilityTextureName"			"undead_build_sacrificial_pit"
         "MaxLevel" 						"1"
 
@@ -203,7 +185,6 @@
 
         "UnitName"						"undead_sacrificial_pit"
         "AbilityCooldown"				"0"
-        "AbilityGoldCost"				"75"
         // End of BuildingHelper info
 
         "AbilitySpecial"
@@ -224,15 +205,6 @@
                 "lumber_cost"			"150"
             }
         }
-        
-        "OnSpellStart"
-        {
-            "RunScript"
-            {
-                "ScriptFile"	"units/builder.lua"
-                "Function"		"Build"
-            }
-        }
     }
 
     "undead_build_boneyard_disabled"
@@ -244,7 +216,8 @@
 
     "undead_build_boneyard"
     {
-        "BaseClass"             		"ability_datadriven"
+        "BaseClass"             		"ability_lua"
+        "ScriptFile"                    "abilities/undead/undead_build/undead_build_boneyard.lua"
         "AbilityTextureName"			"undead_build_boneyard"
         "MaxLevel" 						"1"
 
@@ -261,7 +234,6 @@
 
         "UnitName"						"undead_boneyard"
         "AbilityCooldown"				"0"
-        "AbilityGoldCost"				"175"
         // End of BuildingHelper info
 
         "AbilitySpecial"
@@ -280,15 +252,6 @@
             {
                 "var_type"				"FIELD_INTEGER"
                 "lumber_cost"			"200"
-            }
-        }
-
-        "OnSpellStart"
-        {
-            "RunScript"
-            {
-                "ScriptFile"	"units/builder.lua"
-                "Function"		"Build"
             }
         }
     }

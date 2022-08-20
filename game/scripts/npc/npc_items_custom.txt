@@ -1,4 +1,5 @@
 #base "items/queue/item_undead_queue.kv"
+#base "items/build/item_undead_build_abilities.kv"
 
 "DOTAAbilities"
 {

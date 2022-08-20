@@ -1,10 +1,93 @@
 import { generic_build_ability } from "./abilities/builder/generic_build_ability";
 import { modifier_generic_build_timer } from "./modifiers/building/modifier_generic_build_timer";
 import { ResourceManager } from "./ResourceManager";
+import { Building } from "./types/gen";
+import { ReorderItems } from "./util/mitems";
 import { UnitMap } from "./util/UnitMap";
-import { SendErrorMessage } from "./util/Utility";
+import { GetFoodProduced, IsCityCenter, IsUndead, log, SendErrorMessage } from "./util/Utility";
+
+
+interface PlayerStructureInfo {
+    buildings: Building[];
+    cityCenterLevel: 1 | 2 | 3;
+}
+
 
 export class BuildManager {
+
+    private static structures: Record<PlayerID, PlayerStructureInfo> = {
+        0: { buildings: [], cityCenterLevel: 1 },
+        1: { buildings: [], cityCenterLevel: 1 },
+        2: { buildings: [], cityCenterLevel: 1 },
+        3: { buildings: [], cityCenterLevel: 1 },
+        "-1": { buildings: [], cityCenterLevel: 1 },
+        4: { buildings: [], cityCenterLevel: 1 },
+        5: { buildings: [], cityCenterLevel: 1 },
+        6: { buildings: [], cityCenterLevel: 1 },
+        7: { buildings: [], cityCenterLevel: 1 },
+        8: { buildings: [], cityCenterLevel: 1 },
+        9: { buildings: [], cityCenterLevel: 1 },
+        10: { buildings: [], cityCenterLevel: 1 },
+        11: { buildings: [], cityCenterLevel: 1 },
+        12: { buildings: [], cityCenterLevel: 1 },
+        13: { buildings: [], cityCenterLevel: 1 },
+        14: { buildings: [], cityCenterLevel: 1 },
+        15: { buildings: [], cityCenterLevel: 1 },
+        16: { buildings: [], cityCenterLevel: 1 },
+        17: { buildings: [], cityCenterLevel: 1 },
+        18: { buildings: [], cityCenterLevel: 1 },
+        19: { buildings: [], cityCenterLevel: 1 },
+        20: { buildings: [], cityCenterLevel: 1 },
+        21: { buildings: [], cityCenterLevel: 1 },
+        22: { buildings: [], cityCenterLevel: 1 },
+        23: { buildings: [], cityCenterLevel: 1 }
+    }
+
+    public static AddStructure(playerId: PlayerID, building: Building) {
+        this.structures[playerId].buildings.push(building);
+    }
+
+    public static RemoveStructure(playerId: PlayerID, building: Building) {
+        this.structures[playerId].buildings.splice(
+            this.structures[playerId].buildings.indexOf(building)
+        )
+    }
+
+    public static SetCityCenterLevel(playerId: PlayerID, level: PlayerStructureInfo['cityCenterLevel']){
+        this.structures[playerId].cityCenterLevel = level;
+    }
+
+
+    public static CheckCurrentCityCenters(playerID: PlayerID) {
+        let hero = PlayerResource.GetSelectedHeroEntity(playerID);
+        let structures: Building[] = this.structures[playerID].buildings;
+        let city_center_level = 0;
+        for (const building of structures) {
+            if (IsCityCenter(building)) {
+                let level = building.GetLevel();
+                if (level > city_center_level) {
+                    city_center_level = level;
+                }
+            }
+        }
+        BuildManager.SetCityCenterLevel(playerID, city_center_level as PlayerStructureInfo['cityCenterLevel']);
+        print("Current City Center Level for player " + (playerID + (" is: " + city_center_level)));
+        if (city_center_level === 0) {
+            // TODO: reveals
+            // let time_to_reveal = 120;
+            // print("Player " + (playerID + (" has no city centers left standing. Revealed in " + (time_to_reveal + " seconds until a City Center is built."))));
+            // hero.RevealTimer = Timers.CreateTimer(time_to_reveal, function () {
+            //     Players.RevealToAllEnemies(playerID);
+            // });
+        }
+        else {
+            // Players.StopRevealing(playerID);
+        }
+    };
+
+
+
+
 
 
 
@@ -46,12 +129,8 @@ export class BuildManager {
         const teamNumber = caster.GetTeam()
 
         if (BuildingHelper.AddBuilding(evt)) {
-            
-            evt.OnPreConstruction(function(){
-                print('BM: On pre construction');
-                // Hacks!
-                // @ts-ignore
-                const vPos: Vector = this;
+
+            evt.OnPreConstruction(function (this: void, vPos: Vector) {
 
                 // Enemy unit check
                 const enemies = FindUnitsInRadius(
@@ -98,12 +177,9 @@ export class BuildManager {
                 }
             });
 
-            evt.OnBuildingPosChosen(function(){
+            // @ts-ignore
+            evt.OnBuildingPosChosen(function (this: void, vPos: Vector) {
                 print('BM: On pos chosen');
-                
-                // Hacks!
-                // @ts-ignore
-                const vPos: Vector = this;
 
                 // Spend resources
                 ResourceManager.ModifyResources(
@@ -124,20 +200,85 @@ export class BuildManager {
                     }
 
                 });
+            });
 
+            evt.OnConstructionCompleted(function(this: void, unit: Building){
+                log("Completed construction of " + (unit.GetUnitName() + (" " + unit.GetEntityIndex())));
+                unit.SetAttackCapability(unit.original_attack!);
+                unit.RemoveModifierByName("modifier_construction");
+
+
+                // todo add and remove
+                // RemoveItemByName(unit, "item_building_cancel");
+
+                ReorderItems(unit);
+                let builders: any[] = [];
+                // if (unit.builder) {
+                //     table.insert(builders, unit.builder);
+                // }
+                // else if (unit.builder) {
+                //     table.insert(builders, unit.builder);
+                // }
+                Timers.CreateTimer(0.1, function () {
+                    if (builders.length === 0) {
+                        return;
+                    }
+                    if (building_name === "human_lumber_mill" || building_name === "orc_war_mill") {
+                        log("Sending " + (builders.length + (" builders to gather lumber after finishing " + building_name)));
+                        for (const [k, builder] of pairs(builders)) {
+                            if (!builder.work) {
+                                builder.GatherFromNearestTree(builder.GetAbsOrigin(), 2000);
+                            }
+                        }
+                    }
+                    else if (building_name === "human_lumber_mill" || building_name === "orc_war_mill") {
+                        log("Sending " + (builders.length + (" builders to gather lumber after finishing " + building_name)));
+                        for (const [k, builder] of pairs(builders)) {
+                            if (!builder.work) {
+                                builder.GatherFromNearestTree(builder.GetAbsOrigin(), 2000);
+                            }
+                        }
+                    }
+                });
+
+                // TOdo
+                BuildManager.AddStructure(playerID, unit);
+
+                let bCityCenter = IsCityCenter(unit);
+                if (bCityCenter) {
+                    BuildManager.CheckCurrentCityCenters(playerID);
+                }
+                let blightSize: "large" | "small" = bCityCenter && "large" || "small";
+
+                log('Is it undead:' + IsUndead(unit))
+                if (IsUndead(unit)) {
+                    Blight.Create(unit, blightSize);
+                    log('Blight created?')
+                }
+                // if (!GameRules.IsDaytime() && IsNightElfAncient(unit)) {
+                //     unit.SetBaseHealthRegen(0.5);
+                // }
+                // if (unit.GetKeyValue("ShopType") === "team") {
+                //     TeachAbility(unit, "ability_shop");
+                // }
+                let food_produced = GetFoodProduced(unit);
+                if (food_produced !== 0) {
+                    ResourceManager.ModifyFoodLimit(playerID, food_produced);
+                }
+
+                // TODO
+                // let playerUnits = Players.GetUnits(playerID);
+                // for (const [k, units] of pairs(playerUnits)) {
+                //     CheckAbilityRequirements(units, playerID);
+                // }
+                // let playerStructures = Players.GetStructures(playerID);
+                // for (const [k, structure] of pairs(playerStructures)) {
+                //     CheckAbilityRequirements(structure, playerID);
+                // }
             })
 
-            evt.OnConstructionCompleted((unit) => {
 
-            })
-
-
-            evt.OnConstructionStarted(function(){
-                
-                // Hacks!
-                // @ts-ignore
-                const unit: CDOTA_BaseNPC = this;
-
+            evt.OnConstructionStarted(function (this: void, unit: CDOTA_BaseNPC) {
                 print("Started construction of " + unit.GetUnitName() + " " + unit.GetEntityIndex());
                 // Play construction sound
 
@@ -162,12 +303,12 @@ export class BuildManager {
                 // end
 
                 // Units can't attack while building
-                // unit.original_attack = unit:GetAttackCapability()
-                // unit:SetAttackCapability(DOTA_UNIT_CAP_NO_ATTACK)
+                unit.original_attack = unit.GetAttackCapability()
+                unit.SetAttackCapability(UnitAttackCapability.NO_ATTACK)
 
                 // Give item to cancel
-                // const item = CreateItem("item_building_cancel", nil, nil)
-                // unit:AddItem(item)
+                const item = CreateItem("item_building_cancel", undefined, undefined)!
+                unit.AddItem(item)
 
                 // FindClearSpace for the builder
                 FindClearSpaceForUnit(caster, caster.GetAbsOrigin(), true)
@@ -204,8 +345,8 @@ export class BuildManager {
             });
 
 
-            evt.OnConstructionCancelled(function(){
-                
+            evt.OnConstructionCancelled(function () {
+
                 // Hacks!
                 // @ts-ignore
                 const work: any = this;

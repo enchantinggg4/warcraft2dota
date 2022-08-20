@@ -1,5 +1,6 @@
 "DOTAAbilities"
 {
+    // Works
     "undead_train_acolyte"
     {
         "BaseClass"             		"ability_lua"
@@ -9,8 +10,6 @@
         "MaxLevel" 						"1"
 
         "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET"
-
-        // "AbilityGoldCost"				"75" // From "GoldCost"
         "AbilityChannelTime"			"%train_time" // From "BuildTime"
 
         "AbilityMultiOrder"				"1"
@@ -40,207 +39,103 @@
         }
     }
 
-    // "undead_train_ghoul"
-    // {
-    //     "BaseClass"             		"ability_datadriven"
-    //     "AbilityTextureName"			"undead_train_ghoul"
-    //     "MaxLevel" 						"1"
-
-    //     "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_AUTOCAST | DOTA_ABILITY_BEHAVIOR_IMMEDIATE | DOTA_ABILITY_BEHAVIOR_IGNORE_CHANNEL | DOTA_ABILITY_BEHAVIOR_IGNORE_PSEUDO_QUEUE"
-
-    //     // "AbilityGoldCost"				"120" // From "GoldCost"
-    //     "AbilityChannelTime"			"%train_time" // From "BuildTime"
-
-    //     "AbilityMultiOrder"				"1"
+    // Works
+    "undead_train_ghoul"
+    {
         
-    //     "AbilitySpecial"
-    //     {
-    //         "01"
-    //         {
-    //             "var_type"				"FIELD_FLOAT"
-    //             "train_time"			"18.0" 
-    //         }
-    //         "02"
-    //         {
-    //             "var_type"				"FIELD_INTEGER"
-    //             "gold_cost"				"120"
-    //         }
-    //         "03"
-    //         {
-    //             "var_type"				"FIELD_INTEGER"
-    //             "lumber_cost"			"0"
-    //         }
-    //         "04"
-    //         {
-    //             "var_type"				"FIELD_INTEGER"
-    //             "food_cost"				"2"
-    //         }
-    //     }
-
-    //     "OnSpellStart"
-    //     {
-    //         "RunScript"
-    //         {
-    //             "ScriptFile"	"buildings/queue.lua"
-    //             "Function"		"EnqueueUnit"
-    //         }
-    //     }
-
-    //     "OnChannelSucceeded"
-    //     {
-    //         // Consume the first item in the queue
-    //         "RunScript"
-    //         {
-    //             "ScriptFile"   	"buildings/queue.lua"
-    //             "Function"      "NextQueue"
-    //         }
-
-    //         "SpawnUnit"
-    //         {
-    //             "UnitName"		"undead_ghoul"
-    //             "Target"
-    //             {
-    //                 "Center"		    "CASTER"
-    //                 "ScriptSelectPoints"
-    //                 {
-    //                     "ScriptFile"    "buildings/rally_point.lua"
-    //                     "Function"      "GetInitialRallyPoint"
-    //                     "Target"		"CASTER"
-    //                     "Count"			"1"
-    //                 }
-    //             }
-    //             "UnitCount"		"1"
-    //             "UnitLimit"		"0"
-    //             "GrantsGold"	"1"
-    //             "GrantsXP"		"1"
-    //             "SpawnRadius"	"10"
-    //             "OnSpawn"
-    //             {
-    //                 "ApplyModifier"
-    //                 {
-    //                     "ModifierName"	"modifier_phased"
-    //                     "Target"		"TARGET"
-    //                     "Duration"		"0.03"
-    //                 }
-
-    //                 "RunScript"
-    //                 {
-    //                     "ScriptFile"    "buildings/rally_point.lua"
-    //                     "Function"      "MoveToRallyPoint"
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
-
-    // "undead_train_crypt_fiend"
-    // {
-    //     "BaseClass"             		"ability_datadriven"
-    //     "AbilityTextureName"			"undead_train_crypt_fiend"
-    //     "MaxLevel" 						"1"
-
-    //     "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_AUTOCAST | DOTA_ABILITY_BEHAVIOR_IMMEDIATE | DOTA_ABILITY_BEHAVIOR_IGNORE_CHANNEL | DOTA_ABILITY_BEHAVIOR_IGNORE_PSEUDO_QUEUE"
-
-    //     // "AbilityGoldCost"				"215" // From "GoldCost"
-    //     "AbilityChannelTime"			"%train_time" // From "BuildTime"
-
-    //     "AbilityMultiOrder"				"1"
+        "BaseClass"             		"ability_lua"
+        "ScriptFile"                    "abilities/undead/undead_train/undead_train_ghoul.lua"
         
-    //     "AbilitySpecial"
-    //     {
-    //         "01"
-    //         {
-    //             "var_type"				"FIELD_FLOAT"
-    //             "train_time"			"30.0" 
-    //         }
-    //         "02"
-    //         {
-    //             "var_type"				"FIELD_INTEGER"
-    //             "gold_cost"				"215"
-    //         }
-    //         "03"
-    //         {
-    //             "var_type"				"FIELD_INTEGER"
-    //             "lumber_cost"			"40"
-    //         }
-    //         "04"
-    //         {
-    //             "var_type"				"FIELD_INTEGER"
-    //             "food_cost"				"3"
-    //         }
-    //     }
+        "AbilityTextureName"			"undead_train_ghoul"
+        "MaxLevel" 						"1"
 
-    //     "OnSpellStart"
-    //     {
-    //         "RunScript"
-    //         {
-    //             "ScriptFile"	"buildings/queue.lua"
-    //             "Function"		"EnqueueUnit"
-    //         }
-    //     }
+        "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_AUTOCAST | DOTA_ABILITY_BEHAVIOR_IMMEDIATE | DOTA_ABILITY_BEHAVIOR_IGNORE_CHANNEL | DOTA_ABILITY_BEHAVIOR_IGNORE_PSEUDO_QUEUE"
 
-    //     "OnChannelSucceeded"
-    //     {
-    //         // Consume the first item in the queue
-    //         "RunScript"
-    //         {
-    //             "ScriptFile"   	"buildings/queue.lua"
-    //             "Function"      "NextQueue"
-    //         }
+        "AbilityChannelTime"			"%train_time" // From "BuildTime"
 
-    //         "SpawnUnit"
-    //         {
-    //             "UnitName"		"undead_crypt_fiend"
-    //             "Target"
-    //             {
-    //                 "Center"		    "CASTER"
-    //                 "ScriptSelectPoints"
-    //                 {
-    //                     "ScriptFile"    "buildings/rally_point.lua"
-    //                     "Function"      "GetInitialRallyPoint"
-    //                     "Target"		"CASTER"
-    //                     "Count"			"1"
-    //                 }
-    //             }
-    //             "UnitCount"		"1"
-    //             "UnitLimit"		"0"
-    //             "GrantsGold"	"1"
-    //             "GrantsXP"		"1"
-    //             "SpawnRadius"	"10"
-    //             "OnSpawn"
-    //             {
-    //                 "ApplyModifier"
-    //                 {
-    //                     "ModifierName"	"modifier_phased"
-    //                     "Target"		"TARGET"
-    //                     "Duration"		"0.03"
-    //                 }
+        "AbilityMultiOrder"				"1"
+        
+        "AbilitySpecial"
+        {
+            "01"
+            {
+                "var_type"				"FIELD_FLOAT"
+                "train_time"			"18.0" 
+            }
+            "02"
+            {
+                "var_type"				"FIELD_INTEGER"
+                "gold_cost"				"120"
+            }
+            "03"
+            {
+                "var_type"				"FIELD_INTEGER"
+                "lumber_cost"			"0"
+            }
+            "04"
+            {
+                "var_type"				"FIELD_INTEGER"
+                "food_cost"				"2"
+            }
+        }
 
-    //                 "RunScript"
-    //                 {
-    //                     "ScriptFile"    "buildings/rally_point.lua"
-    //                     "Function"      "MoveToRallyPoint"
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
+        
+    }
 
-    // "undead_train_crypt_fiend_disabled"
-    // {
-    //     "BaseClass"             		"ability_datadriven"
-    //     "AbilityTextureName"			"undead_train_crypt_fiend"
-    //     "MaxLevel" 						"0"
+    // Works
+    "undead_train_crypt_fiend"
+    {
+        "BaseClass"             		"ability_lua"
+        "ScriptFile"                    "abilities/undead/undead_train/undead_train_crypt_fiend.lua"
+        "AbilityTextureName"			"undead_train_crypt_fiend"
+        "MaxLevel" 						"1"
 
-    //     "OnUpgrade"
-    //     {
-    //         "RunScript"
-    //         {
-    //             "ScriptFile"	"buildings/upgrades.lua"
-    //             "Function"		"SetLevel0"
-    //         }
-    //     }
-    // }
+        "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_AUTOCAST | DOTA_ABILITY_BEHAVIOR_IMMEDIATE | DOTA_ABILITY_BEHAVIOR_IGNORE_CHANNEL | DOTA_ABILITY_BEHAVIOR_IGNORE_PSEUDO_QUEUE"
+
+        "AbilityChannelTime"			"%train_time" // From "BuildTime"
+
+        "AbilityMultiOrder"				"1"
+        
+        "AbilitySpecial"
+        {
+            "01"
+            {
+                "var_type"				"FIELD_FLOAT"
+                "train_time"			"30.0" 
+            }
+            "02"
+            {
+                "var_type"				"FIELD_INTEGER"
+                "gold_cost"				"215"
+            }
+            "03"
+            {
+                "var_type"				"FIELD_INTEGER"
+                "lumber_cost"			"40"
+            }
+            "04"
+            {
+                "var_type"				"FIELD_INTEGER"
+                "food_cost"				"3"
+            }
+        }
+    }
+
+    "undead_train_crypt_fiend_disabled"
+    {
+        "BaseClass"             		"ability_datadriven"
+        "AbilityTextureName"			"undead_train_crypt_fiend"
+        "MaxLevel" 						"0"
+
+        "OnUpgrade"
+        {
+            "RunScript"
+            {
+                "ScriptFile"	"buildings/upgrades.lua"
+                "Function"		"SetLevel0"
+            }
+        }
+    }
 
     // "undead_train_gargoyle"
     // {

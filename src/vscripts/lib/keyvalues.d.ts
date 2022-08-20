@@ -39,6 +39,8 @@ declare interface CDOTA_BaseNPC {
     /// ???
 
     state?: 'idle' | unknown
+
+    original_attack?: UnitAttackCapability
 }
 
 declare interface CustomNetTableDeclarations {

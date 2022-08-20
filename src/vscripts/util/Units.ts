@@ -1,11 +1,12 @@
 import { worker_deposit_payload } from "../abilities/worker/worker_deposit_payload";
 import { worker_harvest_lumber } from "../abilities/worker/worker_harvest_lumber";
 import { Queue } from "../buildings/queue";
+import { Races } from "../data/races";
 import { modifier_gold_deposit } from "../modifiers/building/modifer_gold_deposit";
 import { modifier_lumber_deposit } from "../modifiers/building/modifier_lumber_deposit";
 import { modifier_specially_deniable } from "../modifiers/misc/modifier_specially_deniable";
 import { modifier_harvest_tree } from "../modifiers/worker/modifier_harvest_tree";
-import { CanGatherTree, FindEmptyNavigableTreeNearby, IsCityCenter, IsCustomBuilding, IsValidAlive, log, tobool } from "./Utility";
+import { CanGatherTree, FindEmptyNavigableTreeNearby, GetUnitRace, IsCityCenter, IsCustomBuilding, IsValidAlive, log, tobool } from "./Utility";
 
 interface Unit extends CDOTA_BaseNPC {
     bFirstSpawned?: boolean
@@ -78,7 +79,29 @@ export class Units {
                 unit.AddNewModifier(unit, undefined, modifier_lumber_deposit.name, {});
             }
         })
-        
+    }
+
+    private static BuilderItems(unit: Unit) {
+        const bBuilder = IsBuilder(unit)
+
+         // -- Builder items
+            // if bBuilder and not unit:HasModifier("modifier_kill") then
+            //     local owner = unit:GetOwner()
+            //     local items = Units:GetBuilderItemsForRace(unit:GetRace())
+            //     for _,itemName in pairs(items) do
+            //         unit:AddItem(CreateItem(itemName, owner, unit))
+            //     end
+            // end
+
+        if(bBuilder && !unit.HasModifier("modifier_kill")){
+            const owner = PlayerResource.GetPlayer(unit.GetMainControllingPlayer() as PlayerID);
+            
+            const items = Races[GetUnitRace(unit)].BuilderItems
+
+            for(let item of items){
+                unit.AddItem(CreateItem(item, owner, owner)!)
+            }
+        }
     }
 
     public static Init(unit: Unit) {
@@ -93,6 +116,10 @@ export class Units {
         this.SetupResource(unit);
 
 
+
+        for (let i = 0; i < unit.GetAbilityCount(); i++) {
+            unit.GetAbilityByIndex(i)?.SetLevel(1);
+        }
 
         // Everything can be attacked by allies
         unit.AddNewModifier(unit, undefined, modifier_specially_deniable.name, {});
@@ -133,14 +160,7 @@ export class Units {
         Timers.CreateTimer(0.03, () => {
             if (!IsValidAlive(unit)) return;
 
-            // -- Builder items
-            // if bBuilder and not unit:HasModifier("modifier_kill") then
-            //     local owner = unit:GetOwner()
-            //     local items = Units:GetBuilderItemsForRace(unit:GetRace())
-            //     for _,itemName in pairs(items) do
-            //         unit:AddItem(CreateItem(itemName, owner, unit))
-            //     end
-            // end
+            this.BuilderItems(unit)
 
             // -- Flying Height Z control
             // if unit:GetKeyValue("MovementCapabilities") == "DOTA_UNIT_CAP_MOVE_FLY" then

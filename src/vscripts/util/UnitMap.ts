@@ -2,6 +2,7 @@ export const UnitMap = {
 
     // Undead
     NECROPOLIS: "undead_necropolis",
+    Crypt: "undead_crypt",
 
     ACOLYTE: "undead_acolyte",
     GHOUL: "undead_ghoul",
@@ -11,8 +12,9 @@ export const UnitMap = {
 
 
     // Human
-    HumanWorkshop: "human_workshop"
+    HumanWorkshop: "human_workshop",
 
 
-    // 
+    // Neutral
+    GoldMine: "gold_mine"
 }

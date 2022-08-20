@@ -1,62 +1,93 @@
 
 "DOTAUnits"
 {
-    "npc_dota_building_neutral_gold_mine"
+    //=================================================================================
+    // Building: Gold Mine
+    //=================================================================================
+    "gold_mine"
     {
         // General
         //----------------------------------------------------------------
         "BaseClass"					"npc_dota_building"
         "Model"						"models/mine/mine.vmdl"
-        "ModelScale"				"0.5"
-        "Level"						"1"
-        "HealthBarOffset"			"240"
-    
+        "ModelScale"				"0.6"
+        "Level"						"0"
+        "HealthBarOffset"			"140"
+        "MinimapIcon"				"minimap_gold_mine"
+        "MinimapIconSize"			"550"
+        "MinimapDisableTint"		"1"
+        
+        // Abilities
+        //----------------------------------------------------------------
+        "AbilityLayout"				"4"
+        "Ability1"					"gold_mine_passive"
+        "Ability2"					""
+        
         // Armor
         //----------------------------------------------------------------
-        "ArmorPhysical"				"5"
+        "ArmorPhysical"				"0"
         "MagicalResistance"			"0"
-    
+        
         // Attack
         //----------------------------------------------------------------
         "AttackCapabilities"		"DOTA_UNIT_CAP_NO_ATTACK"
         "AttackDamageType"			"DAMAGE_TYPE_ArmorPhysical"
         "AttackDamageMin"			"0"
         "AttackDamageMax"			"0"
-    
+        "AttackRate"				"0"
+        "AttackAcquisitionRange"	"500"
+        
         // Bounty
         //----------------------------------------------------------------
         "BountyGoldMin"				"0.0"
         "BountyGoldMax"				"0.0"
-    
+        
         // Bounds
         //----------------------------------------------------------------
-        "BoundsHullName"			"DOTA_HULL_SIZE_BARRACKS"
-        "RingRadius"				"140"
-        "CollisionSize"				"144"
-    
+        "BoundsHullName"			"DOTA_HULL_SIZE_HUGE"
+        "RingRadius"				"220"
+        "CollisionSize"				"50"
+
+        // Building Size
+        //----------------------------------------------------------------
+        "ConstructionSize"			"8"
+        "BlockPathingSize"			"6"
+        "Grid"
+        {
+            "GoldMine"
+            {
+                "Square"			"8"
+                "RemoveOnDeath"		"true"
+            }
+        }
+        
+        // Building Cost Stats
+        //----------------------------------------------------------------
+        "GoldCost"					"0"
+        "LumberCost"				"0"
+        "BuildTime"					"60"
+        
         // Movement
         //----------------------------------------------------------------
-        "MovementCapabilities"		"DOTA_UNIT_CAP_MOVE_NONE"	// Needed to cast Point abilities
+        "MovementCapabilities"		"DOTA_UNIT_CAP_MOVE_NONE"
         "MovementSpeed"				"0"
-    
+        
         // Status
         //----------------------------------------------------------------
-        "StatusHealth"				"1200"
-        "StatusHealthRegen"			"5"
-        "StatusMana"				"100"
-        "StatusManaRegen"			"10"
-    
+        "StatusHealth"				"15000"
+        "StatusHealthRegen"			"0"
+        "StatusMana"				"0"
+        "StatusManaRegen"			"0"
+        
         // Vision
         //----------------------------------------------------------------
-        "VisionDaytimeRange"		"900"
-        "VisionNighttimeRange"		"600"
-    
+        "VisionDaytimeRange"		"0"
+        "VisionNighttimeRange"		"0"
+        
         // Team
         //----------------------------------------------------------------
         "TeamName"					"DOTA_TEAM_NEUTRALS"
-        "CombatClassAttack"			"DOTA_COMBAT_CLASS_ATTACK_BASIC"
-        "CombatClassDefend"			"DOTA_COMBAT_CLASS_DEFEND_STRUCTURE"
         "UnitRelationShipClass"		"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_BUILDING"
-    
+        
     }
 }

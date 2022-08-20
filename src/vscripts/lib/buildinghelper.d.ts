@@ -1,12 +1,12 @@
 declare interface EventKeys {
     caster: CBaseEntity;
     ability: CDOTABaseAbility;
-    OnPreConstruction(callback: (vPos: Vector) => void): void;
-    OnBuildingPosChosen(callback: (vPos: Vector) => void): void;
-    OnConstructionFailed(callback: () => void): void;
-    OnConstructionCancelled(callback: (work: any) => void): void;
-    OnConstructionStarted(callback: (unit: CDOTA_BaseNPC) => void): void;
-    OnConstructionCompleted(callback: (unit: CDOTA_BaseNPC) => void): void;
+    OnPreConstruction(callback: (this: void, vPos: Vector) => void): void;
+    OnBuildingPosChosen(callback: (this: void, vPos: Vector) => void): void;
+    OnConstructionFailed(callback: (this: void, ) => void): void;
+    OnConstructionCancelled(callback: (this: void, work: any) => void): void;
+    OnConstructionStarted(callback: (this: void, unit: CDOTA_BaseNPC) => void): void;
+    OnConstructionCompleted(callback: (this: void, unit: CDOTA_BaseNPC) => void): void;
     OnBelowHalfHealth(callback: (unit: unknown) => void): void;
     OnAboveHalfHealth(callback: (unit: unknown) => void): void;   
 }

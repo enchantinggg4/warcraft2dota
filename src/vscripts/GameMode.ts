@@ -6,7 +6,7 @@ import { modifier_acolyte } from "./modifiers/worker/modifier_acolyte";
 import { GoldMine, Resource } from "./types/GoldMine";
 import { CustomGameEvents } from "./util/CustomGameEvents";
 import { Spawns } from "./util/Spawns";
-import { Utility } from "./util/Utility";
+import { log, Utility } from "./util/Utility";
 import { InstallLumber } from "./lib/lumber"
 import { ResourceManager } from "./ResourceManager";
 import { UnitMap } from "./util/UnitMap";
@@ -129,14 +129,18 @@ export class GameMode {
         // npc.ForceKill(false);
         PlayerResource.SetCameraTarget(playerId, undefined);
 
-        this.SpawnUndead(playerId);
+        this.SpawnUndead(npc.GetAbsOrigin(), playerId);
 
     }
 
 
 
-    private SpawnUndead(playerId: PlayerID) {
+    private SpawnUndead(loc: Vector, playerId: PlayerID) {
         const player = PlayerResource.GetPlayer(playerId)!;
+
+        // todo
+        loc.z += 128
+        log('Hero pos:', loc)
 
         ResourceManager.Deposit(playerId, Resource.LUMBER, 400);
         // Create throne
@@ -147,20 +151,23 @@ export class GameMode {
         // npc_dota_building_necropolis
         const closestMine = Utility.FindClosestFreeMine(player.GetAbsOrigin());
 
-        print(PlayerResource.GetSelectedHeroEntity(playerId))
+
+
+
         const castle: CDOTA_BaseNPC = BuildingHelper.PlaceBuilding(
             player,
             UnitMap.NECROPOLIS,
-            player.GetAbsOrigin(),
+            // UnitMap.Crypt,
+            loc,
             BuildingHelper.GetConstructionSize(UnitMap.NECROPOLIS),
             BuildingHelper.GetBlockPathingSize(UnitMap.NECROPOLIS),
             0
         )
 
-        castle.SetControllableByPlayer(playerId, true);
-        const position: Vector = player.GetAbsOrigin().__add(player.GetForwardVector().__mul(300));
-
         Blight.Create(castle, "large");
+
+        castle.SetControllableByPlayer(playerId, true);
+        const position: Vector = loc.__add(player.GetForwardVector().__mul(300));
 
         for (let i = 0; i < 3; i++) {
             const acolyte: CDOTA_BaseNPC = CreateUnitByName(UnitMap.ACOLYTE, position, true, player, player, player.GetTeam());
@@ -184,11 +191,11 @@ export class GameMode {
             if (targetType == -1) continue;
 
             if (targetType == 0) {
-                // const mine = CreateUnitByName("npc_dota_building_neutral_gold_mine", entity.GetAbsOrigin(), false, undefined, undefined, DotaTeam.NEUTRALS) as GoldMine;
-                // mine.gold = 15000;
+                const mine = CreateUnitByName(UnitMap.GoldMine, entity.GetAbsOrigin(), false, undefined, undefined, DotaTeam.NEUTRALS) as GoldMine;
+                mine.gold = 15000;
 
-                // mine.AddNewModifier(mine, undefined, modifier_fake_invul.name, { duration: -1 });
-                // mine.AddNewModifier(mine, undefined, modifier_gold_mine.name, { duration: -1 });
+                mine.AddNewModifier(mine, undefined, modifier_fake_invul.name, { duration: -1 });
+                mine.AddNewModifier(mine, undefined, modifier_gold_mine.name, { duration: -1 });
                 // mine.RemoveModifierByName("modifier_invulnerable");
             }
 

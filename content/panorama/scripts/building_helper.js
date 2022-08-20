@@ -533,7 +533,7 @@ function IsBlocked(position) {
     if ((flag & adjust) == adjust)
         flag -= GRID_TYPES["BUILDABLE"]
 
-    $.Msg('GRID:',Root.GridNav[x][y],' ENTGRID:',entGridValue,' FLAG:',flag,' REQUIRES:', requires)
+    // $.Msg('GRID:',Root.GridNav[x][y],' ENTGRID:',entGridValue,' FLAG:',flag,' REQUIRES:', requires)
 
 
     // If the bits don't match, its invalid

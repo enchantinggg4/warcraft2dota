@@ -5,7 +5,5 @@ import { generic_build_ability } from "./generic_build_ability";
 @registerAbility()
 export class undead_build_ziggurat extends generic_build_ability {
 
-    OnSpellStart(): void {
-        BuildManager.InitBuild(this.GetOwner() as any, this);
-    }
+    
 }

@@ -1,3 +1,4 @@
+import { RaceType } from "../data/races";
 import { BaseModifier } from "../lib/dota_ts_adapter";
 import { modifier_gold_deposit } from "../modifiers/building/modifer_gold_deposit";
 import { modifier_generic_building } from "../modifiers/building/modifier_generic_building";
@@ -385,7 +386,7 @@ export function IsChanneling(unit: CDOTA_BaseNPC) {
 }
 
 // todo
-export function GetUnitRace(unit: CDOTA_BaseNPC) {
+export function GetUnitRace(unit: CDOTA_BaseNPC): RaceType {
     return "undead"
     // unit.getrace
 }
@@ -416,4 +417,8 @@ export function CanGatherTree(unit: CDOTA_BaseNPC): boolean {
 
 export function log(...args: any[]) {
     print(`[WC] `, ...args)
+}
+
+export function IsUndead(unit: CDOTA_BaseNPC): boolean {
+    return GetUnitRace(unit) === "undead";
 }

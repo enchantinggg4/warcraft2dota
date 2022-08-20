@@ -94,3 +94,5 @@ CDOTA_BaseNPC.SetCanAttackTrees = function (this: CDOTA_BaseNPC, bAble: boolean)
         this.RemoveModifierByName(modifier_harvest_tree.name);
     }
 };
+
+CDOTA_BaseNPC.original_attack = UnitAttackCapability.MELEE_ATTACK

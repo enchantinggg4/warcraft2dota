@@ -1,4 +1,6 @@
+import { BuildManager } from "../../BuildManager";
 import { BaseAbility } from "../../lib/dota_ts_adapter";
+import { log } from "../../util/Utility";
 
 
 export interface BuildInfo {
@@ -25,5 +27,9 @@ export abstract class generic_build_ability extends BaseAbility {
             lumber: this.GetSpecialValueFor("lumber_cost"),
             buildTime: this.GetSpecialValueFor("build_time"),
         }
+    }
+
+    OnSpellStart(): void {
+        BuildManager.InitBuild(this.GetOwner() as any, this);
     }
 }
